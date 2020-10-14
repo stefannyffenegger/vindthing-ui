@@ -1,0 +1,22 @@
+
+
+npm install npx
+
+npx create-nuxt-app
+
+
+ To get started:
+        cd intro-to-nuxt
+        npm run dev
+
+  To build & start for production:
+        cd intro-to-nuxt
+        npm run build
+        npm run start
+
+npm install @nuxtjs/auth @nuxtjs/axios
+
+
+
+test.admin
+test123
