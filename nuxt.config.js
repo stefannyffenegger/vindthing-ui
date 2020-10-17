@@ -1,6 +1,7 @@
 export default {
   // Target (https://go.nuxtjs.dev/config-target)
-  target: 'static',
+  //target: 'static',
+  ssr: false,
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
@@ -8,11 +9,22 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css' }
+      { hid: 'description', name: 'description', content: '' }
     ],
     link: [
+      { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css' },
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    ],
+    script: [
+      {
+        src: "https://code.jquery.com/jquery-3.5.1.slim.min.js",
+        type: "text/javascript"
+      },
+      {
+        src:
+          "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js",
+        type: "text/javascript"
+      }
     ]
   },
 
@@ -48,22 +60,21 @@ export default {
   auth: {
     rewriteRedirects: true,
     redirect: {
-      login: false,
-      logout: '/',
-      callback: '/',
-      home: '/'
+      login: '/login',
+      logout: '/login',
+      callback: '/login',
+      home: '/',
     },
     strategies: {
       local: {
         endpoints: {
           login: { url: '/api/auth/signin', method: 'post', propertyName: 'accessToken' },
-          user: false,
-          logout: false
+          logout: false,
+          user: { url: '/api/auth/profile/get', method: 'get', propertyName: false },
         }
       }
     }
   },
-
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
   }
