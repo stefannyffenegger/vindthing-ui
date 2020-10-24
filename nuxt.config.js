@@ -5,7 +5,7 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    title: 'VindThingUI',
+    title: 'VindThing',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -61,6 +61,7 @@ export default {
     rewriteRedirects: true,
     redirect: {
       login: '/login',
+      register: '/chat',
       logout: '/login',
       callback: '/login',
       home: '/',
@@ -69,8 +70,9 @@ export default {
       local: {
         endpoints: {
           login: { url: '/api/auth/signin', method: 'post', propertyName: 'accessToken' },
+          register: {url: '/api/auth/signup', method: 'post', propertyName: false},
           logout: false,
-          user: { url: '/api/auth/profile/get', method: 'get', propertyName: false },
+          user: { url: '/api/auth/profile/get', method: 'get', propertyName: false }
         }
       }
     }

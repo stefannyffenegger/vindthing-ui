@@ -5,7 +5,7 @@
       <div class="col-md-6">
         <div class="mb-3">
           <div class="input-group">
-            <input type="text" id="from" class="form-control" placeholder="Choose a nickname" />
+            <input type="text" id="from" class="form-control" :value=loggedInUser.username />
             <div class="btn-group">
               <button
                 type="button"
@@ -71,11 +71,15 @@
 
 <script>
 import Notification from "~/components/Notification";
+import { mapGetters } from "vuex";
 
 export default {
   middleware: "auth",
   components: {
     Notification
+  },
+  computed: {
+    ...mapGetters(["loggedInUser"])
   },
 
   head() {

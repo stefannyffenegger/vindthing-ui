@@ -9,13 +9,13 @@
 
           <form method="post" @submit.prevent="register">
             <div class="field">
-              <label class="label">Username</label>
+              <label class="label">Name</label>
               <div class="control">
                 <input
                   type="text"
                   class="input"
-                  name="username"
-                  v-model="username"
+                  name="name"
+                  v-model="name"
                   required
                 />
               </div>
@@ -79,16 +79,16 @@ export default {
   methods: {
     async register() {
       try {
-        await this.$axios.post('register', {
-          username: this.username,
+        await this.$axios.post('/api/auth/signup', {
+          username: this.name,
           email: this.email,
           password: this.password
         })
 
         await this.$auth.loginWith('local', {
           data: {
-          email: this.email,
-          password: this.password
+            username: this.name,
+            password: this.password
           },
         })
 
