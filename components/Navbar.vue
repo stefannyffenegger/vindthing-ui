@@ -18,6 +18,9 @@
           <nuxt-link class="nav-link" to="/">Home</nuxt-link>
         </li>
         <template v-if="isAuthenticated">
+          <li class="nav-item active">
+            <nuxt-link class="nav-link" to="/chat">Chat</nuxt-link>
+          </li>
           <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
