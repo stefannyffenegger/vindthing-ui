@@ -15,7 +15,7 @@
                   type="text"
                   class="input"
                   name="username"
-                  v-model="username"
+                  v-model="email"
                 />
               </div>
             </div>
@@ -54,7 +54,7 @@ export default {
 
   data() {
     return {
-      username: '',
+      email: '',
       password: '',
       error: null
     }
@@ -65,7 +65,7 @@ export default {
       try {
         await this.$auth.loginWith('local', {
           data: {
-          username: this.username,
+          email: this.email,
           password: this.password
           }
         })

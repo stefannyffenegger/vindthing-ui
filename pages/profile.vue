@@ -4,8 +4,8 @@
       <h2 class="title">My Profile</h2>
       <div class="content">
         <p>
-          <strong>Username:</strong>
-          {{ loggedInUser.username }}
+          <strong>Name:</strong>
+          {{ loggedInUser.name }}
         </p>
         <p>
           <strong>Email:</strong>

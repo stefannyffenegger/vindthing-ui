@@ -5,7 +5,7 @@
       <div class="col-md-6">
         <div class="mb-3">
           <div class="input-group">
-            <input type="text" id="from" class="form-control" :value=loggedInUser.username />
+            <input type="text" id="from" class="form-control" :value=loggedInUser.email />
             <div class="btn-group">
               <button
                 type="button"
