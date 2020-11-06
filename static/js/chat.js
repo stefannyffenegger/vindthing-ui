@@ -31,7 +31,7 @@ function connect() {
             var socket = new SockJS( chatServer + '/chat');
             stompClient = Stomp.over(socket);
 
-            stompClient.connect({ email: userName }, function () {
+            stompClient.connect({ username: userName }, function () {
                 stompClient.subscribe('/topic/broadcast', function (output) {
                     showMessage(createTextNode(JSON.parse(output.body)));
                 });
