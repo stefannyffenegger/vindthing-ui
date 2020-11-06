@@ -4,6 +4,7 @@ npm install npx
 
 npx create-nuxt-app
 
+npm install nuxt-buefy
 
  To get started:
         cd intro-to-nuxt

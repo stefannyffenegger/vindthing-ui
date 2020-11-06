@@ -22,7 +22,7 @@
             <nuxt-link class="nav-link" to="/chat">Chat</nuxt-link>
           </li>
           <li class="nav-item active">
-            <nuxt-link class="nav-link" to="/spaces">Spaces</nuxt-link>
+            <nuxt-link class="nav-link" to="/stores">Stores</nuxt-link>
           </li>
           <li class="nav-item dropdown">
             <a
