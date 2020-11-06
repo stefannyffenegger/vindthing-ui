@@ -25,7 +25,7 @@ function connect() {
         return;
     }
     //connect user
-    $.post(chatServer + '/rest/user-connect',
+    $.post(chatServer + '/api/chat/user-connect',
         { username: userName },
         function (remoteAddr, status, xhr) {
             var socket = new SockJS( chatServer + '/chat');
@@ -60,7 +60,7 @@ function connect() {
 
 function disconnect() {
     if (stompClient != null) {
-        $.post(chatServer + '/rest/user-disconnect',
+        $.post(chatServer + '/api/chat/user-disconnect',
             { username: userName },
             function () {
                 sendConnection(' disconnected from server');
@@ -157,7 +157,7 @@ function updateUsers(userName) {
     var index;
     activeUserUL.html('');
 
-    var url = chatServer + '/rest/active-users-except/' + userName;
+    var url = chatServer + '/api/chat/active-users-except/' + userName;
     $.ajax({
         type: 'GET',
         url: url,
