@@ -97,7 +97,7 @@ function send() {
         alert('Please select a user.');
         return;
     }
-    stompClient.send("/app/chat", { 'sender': userName },
+    stompClient.send("/ws/chat", { 'sender': userName },
         JSON.stringify({ 'from': userName, 'text': text, 'recipient': selectedUser }));
     $("#message").val("");
 }
