@@ -36,6 +36,7 @@
             >{{ loggedInUser.email }}</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <nuxt-link class="dropdown-item" to="/profile">My Profile</nuxt-link>
+              <nuxt-link class="dropdown-item" to="/ws-test">Websocket Tests</nuxt-link>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" @click="logout">Logout</a>
             </div>

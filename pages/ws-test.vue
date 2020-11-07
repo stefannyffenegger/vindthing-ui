@@ -1,28 +1,34 @@
 <template>
   <div class="container">
+    <div class="columns">
+      <div class="column">
+        <div class="field has-addons">
+          <p class="control">
+            <button id="connect" class="button" onclick="connect()">
+              Connect
+            </button>
+          </p>
+          <p class="control">
+            <button id="disconnect" class="button" onclick="disconnect()">
+              Disconnect
+            </button>
+          </p>
+        </div>
+      </div>
+      <div class="column">
+        Second column
+      </div>
+      <div class="column">
+        Third column
+      </div>
+      <div class="column">
+        Fourth column
+      </div>
+    </div>
+
     <h1 class="text-center mb-4">Chat</h1>
     <div class="row">
       <div class="col-md-6">
-        <div class="mb-3">
-          <div class="input-group">
-            <input type="text" id="from" class="form-control" :value=loggedInUser.email />
-            <div class="btn-group">
-              <button
-                type="button"
-                id="connect"
-                class="btn btn-sm btn-outline-secondary"
-                onclick="connect()"
-              >Connect</button>
-              <button
-                type="button"
-                id="disconnect"
-                class="btn btn-sm btn-outline-secondary"
-                onclick="disconnect()"
-                disabled
-              >Disconnect</button>
-            </div>
-          </div>
-        </div>
         <div class="mb-3" id="users" style="display: none;">
           <span id="active-users-span"></span>
           <ul id="active-users" class="list-group list-group-horizontal-sm">
@@ -33,7 +39,7 @@
         </div>
         <div class="mb-3">
           <div class="input-group" id="sendmessage" style="display: none;">
-            <input type="text" id="message" class="form-control" placeholder="Message" />
+            <input type="text" id="message" class="form-control" placeholder="Message"/>
             <div class="input-group-append">
               <button id="send" class="btn btn-primary" onclick="send()">Send</button>
             </div>
@@ -60,7 +66,7 @@
 
 <script>
 import Notification from "~/components/Notification";
-import { mapGetters } from "vuex";
+import {mapGetters} from "vuex";
 
 export default {
   middleware: "auth",
@@ -82,7 +88,7 @@ export default {
           src: "https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"
         },
         {
-          src: "js/chat.js"
+          src: "js/ws-client.js"
         }
       ],
       link: [
@@ -100,4 +106,5 @@ export default {
     };
   }
 };
+connect(loggedInUser.email);
 </script>
