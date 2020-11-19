@@ -1,5 +1,6 @@
 export const state = () => ({
-    stores: []
+    stores: [],
+    focusedStoreId: null
 })
 
 export const mutations = {
@@ -24,7 +25,16 @@ export const mutations = {
             text,
             done: false
         })
-    }
+    },
+    ADD_ITEM(state, item) {
+        const index = state.stores.findIndex(store => store.id === item.storeId );
+        console.log("index:" + index)
+        delete item.storeId;
+        state.stores[index].items.push(item)
+    },
+    SET_FOCUSED_STORE_ID(state, store_id) {
+        state.focusedStoreId = store_id
+    },
 }
 
 export const actions = {
@@ -61,12 +71,32 @@ export const actions = {
         ///////////
         // Anschauen
         commit('REMOVE_STORE', store_id)
+    },
+    async createItem({ commit }, form) {
+        let res = await this.$axios.post("/api/item/add", {
+            name: form.name,
+            description: form.description,
+            quantity: form.quantity,
+            storeId: form.storeId
+        });
+        ////////////////
+        /// Inefficent
+        res.data.storeId = form.storeId
 
-    }
+        commit('ADD_ITEM', res.data)
+    },
+
+
+    async setFocusedStoreId({ commit }, store_id) {
+        commit('SET_FOCUSED_STORE_ID', store_id)
+    },
 }
 
 export const getters = {
     getStores(state) {
         return state.stores
+    },
+    getFocusedStoreId(state) {
+        return state.focusedStoreId
     }
 }

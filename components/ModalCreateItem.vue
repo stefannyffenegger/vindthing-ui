@@ -1,8 +1,8 @@
 <template>
   <div class="container m-5">
-    <h2 class="title">Stores</h2>
+    <h2 class="title">Item</h2>
     <div class="content">
-      <form method="post" @submit.prevent="createStore">
+      <form method="post" @submit.prevent="createItem">
         <div class="field">
           <label class="label">Name</label>
           <div class="control">
@@ -28,13 +28,13 @@
           </div>
         </div>
         <div class="field">
-          <label class="label">Location</label>
+          <label class="label">Quantity</label>
           <div class="control">
             <input
               type="text"
               class="input"
-              name="location"
-              v-model="form.location"
+              name="quantity"
+              v-model="form.quantity"
               required
             />
           </div>
@@ -51,7 +51,7 @@
           <div class="control column">
             <button type="submit" class="button is-dark is-fullwidth"
             @click="$parent.close()">
-              Create Store
+              Create Item
             </button>
           </div>
         </div>
@@ -62,7 +62,6 @@
 
 <script>
 import { mapMutations, mapGetters } from "vuex";
-import ModalForm from "~/components/Modal";
 
 export default {
   data() {
@@ -70,18 +69,20 @@ export default {
       form: {
         name: "",
         description: "",
-        location: "",
+        quantity: "",
       },
     };
   },
-
+  computed: mapGetters({
+    getFocusedStoreId: "stores/getFocusedStoreId",
+  }),
   methods: {
-    async createStore() {
-      console.log(this.form);
-      this.$store.dispatch("stores/createStore", this.form);
+    async createItem() {
+      this.form.storeId = this.getFocusedStoreId;
+      this.$store.dispatch("stores/createItem", this.form);
       this.form = [];
     },
-  },
+},
 };
 </script>
 

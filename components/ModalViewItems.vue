@@ -1,24 +1,16 @@
 <template>
   <section class="section">
-    <h2 class="title">Stores</h2>
+    <h2 class="title">Items</h2>
 
     <button
       class="button is-dark is-fullwidth"
-      @click="isComponentModalStoreActive = true"
+      @click="isComponentModalItemActive = true"
     >
-      New Store
+      New Item
     </button>
-
-    <b-modal v-model="isComponentModalStoreActive">
-      <LazyModalCreateStore></LazyModalCreateStore>
-    </b-modal>
 
     <b-modal v-model="isComponentModalItemActive">
       <LazyModalCreateItem></LazyModalCreateItem>
-    </b-modal>
-
-    <b-modal v-model="isComponentModalViewItemsActive">
-      <LazyModalViewItems></LazyModalViewItems>
     </b-modal>
 
     <hr />
@@ -28,7 +20,7 @@
     </div>
 
     <b-table
-      :data="getAllStores"
+      :data="this.getItems"
       :card-layout="isCardLayout"
       :mobile-cards="isCardLayout"
       hoverable
@@ -36,11 +28,6 @@
       paginated
       per-page="10"
       sort-multiple
-      detailed
-      custom-detail-row
-      detail-key="item.id"
-      @details-open="(row) => $buefy.toast.open(`Expanded ${row.name}`)"
-      :show-detail-icon="true"
     >
       <template
         v-if="column.searchable && !column.numeric"
@@ -73,8 +60,8 @@
 
       <b-table-column
         searchable
-        field="location"
-        label="Location"
+        field="quantity"
+        label="Quantity"
         v-slot="props"
         >{{ props.row.location }}</b-table-column
       >
@@ -83,40 +70,6 @@
         <b-button @click="deleteStore(props.row.id)">Delete</b-button>
       </b-table-column>
 
-      <b-table-column label="Add" v-slot="props">
-        <b-button @click="openModalItemCreate(props.row.id)">Add</b-button>
-      </b-table-column>
-
-      <b-table-column label="View" v-slot="props">
-        <b-button @click="openModalViewtems(props.row.id)">View</b-button>
-      </b-table-column>
-
-      <template slot="detail" slot-scope="props">
-        <tr>
-          <th></th>
-          <th></th>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Quantity</th>
-          <th></th>
-          <th></th>
-        </tr>
-        <tr v-for="item in props.row.items" :key="item.id">
-          <td></td>
-          <td></td>
-          <td>
-            {{ item.id }}
-          </td>
-          <td>
-            {{ item.name }}
-          </td>
-          <td>
-            {{ item.quantity }}
-          </td>
-          <td></td>
-          <td></td>
-        </tr>
-      </template>
     </b-table>
   </section>
 </template>
@@ -127,14 +80,12 @@ import { mapMutations, mapGetters } from "vuex";
 export default {
   data() {
     return {
-      isComponentModalStoreActive: false,
       isComponentModalItemActive: false,
-      isComponentModalViewItemsActive: false,
-      isCardLayout: false
+      isCardLayout: false,
     };
   },
-
   middleware: "auth",
+
   computed: {
     ...mapGetters({
       getAllStores: "stores/getStores",
@@ -153,14 +104,7 @@ export default {
       this.$store.dispatch("stores/setFocusedStoreId", storeId);
       this.isComponentModalItemActive = true
     },
-    openModalViewtems(storeId) {
-      this.$store.dispatch("stores/setFocusedStoreId", storeId);
-      this.isComponentModalViewItemsActive = true
-    },
   },
 
-  mounted() {
-    this.$store.dispatch("stores/getStores");
-  },
 };
 </script>
