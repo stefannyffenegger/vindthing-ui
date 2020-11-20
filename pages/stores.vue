@@ -3,7 +3,7 @@
     <h2 class="title">Stores</h2>
 
     <button
-      class="button is-dark is-fullwidth"
+      class="button is-black is-fullwidth"
       @click="isComponentModalStoreActive = true"
     >
       New Store
@@ -29,6 +29,7 @@
 
     <b-table
       :data="getAllStores"
+      ref="table"
       :card-layout="isCardLayout"
       :mobile-cards="isCardLayout"
       hoverable
@@ -104,7 +105,10 @@
         </div>
       </b-table-column>
 
-      <template slot="detail" slot-scope="props">
+      <template
+        slot="detail"
+        slot-scope="props"
+      >
         <tr class="small">
           <th></th>
           <th></th>

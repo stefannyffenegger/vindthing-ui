@@ -1,58 +1,45 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <nuxt-link class="navbar-brand mb-0 h1" to="/">VindThing</nuxt-link>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-toggle="collapse"
-      data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <nuxt-link class="nav-link" to="/">Home</nuxt-link>
-        </li>
-        <template v-if="isAuthenticated">
-          <li class="nav-item active">
-            <nuxt-link class="nav-link" to="/chat">Chat</nuxt-link>
-          </li>
-          <li class="nav-item active">
-            <nuxt-link class="nav-link" to="/stores">Stores</nuxt-link>
-          </li>
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="navbarDropdown"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >{{ loggedInUser.email }}</a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <nuxt-link class="dropdown-item" to="/profile">My Profile</nuxt-link>
-              <nuxt-link class="dropdown-item" to="/ws-test">Websocket Tests</nuxt-link>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" @click="logout">Logout</a>
-            </div>
-          </li>
-        </template>
-        <template v-else>
-          <li class="nav-item">
-            <nuxt-link class="nav-link" to="/register">Register</nuxt-link>
-          </li>
-          <li class="nav-item">
-            <nuxt-link class="nav-link" to="/login">Login</nuxt-link>
-          </li>
-        </template>
-      </ul>
-    </div>
-  </nav>
+  <b-navbar class="is-light">
+    <template slot="brand">
+      <b-navbar-item>
+        <nuxt-link to="/"><b-icon icon="layers-search"></b-icon> <strong>VindThing</strong></nuxt-link>
+      </b-navbar-item>
+    </template>
+
+    <template slot="start">
+      <b-navbar-item>
+        <nuxt-link to="/chat">Chat</nuxt-link>
+      </b-navbar-item>
+      <b-navbar-item>
+        <nuxt-link to="/stores">Stores</nuxt-link>
+      </b-navbar-item>
+    </template>
+
+    <template slot="end">
+      <template v-if="isAuthenticated">
+        <b-navbar-dropdown class="is-hoverable" :label=loggedInUser.email>
+          <b-navbar-item>
+            <nuxt-link to="/profile">Profile</nuxt-link>
+          </b-navbar-item>
+          <b-navbar-item>
+            <nuxt-link to="/ws-test">Websocket Tests</nuxt-link>
+          </b-navbar-item>
+          <hr class="navbar-divider">
+          <b-navbar-item @click="logout">
+            Logout
+          </b-navbar-item>
+        </b-navbar-dropdown>
+      </template>
+      <template v-else>
+        <b-navbar-item tag="div">
+          <div class="buttons">
+            <nuxt-link to="/register" class="button is-primary"><strong>Register</strong></nuxt-link>
+            <nuxt-link to="/login" class="button is-light">Login</nuxt-link>
+          </div>
+        </b-navbar-item>
+      </template>
+    </template>
+  </b-navbar>
 </template>
 
 <script>

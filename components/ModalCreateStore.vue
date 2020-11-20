@@ -52,7 +52,8 @@
             <button type="submit" class="button is-dark is-fullwidth"
             @click="$parent.close(); $buefy.toast.open({
                     message: 'New Store created!',
-                    type: 'is-success'})">
+                    type: 'is-success',
+                    duration: 5000});">
               Create Store
             </button>
           </div>

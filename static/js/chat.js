@@ -71,6 +71,7 @@ function disconnect() {
                 });
 
             }).done(function () {
+                this.$buefy.toast.open('Something happened')
                 // alert('Request done!');
             }).fail(function (jqxhr, settings, ex) {
                 console.log('failed, ' + ex);
