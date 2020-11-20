@@ -1,58 +1,67 @@
 <template>
-  <div class="container">
-    <h1 class="text-center mb-4">Chat</h1>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="mb-3">
-          <div class="input-group">
-            <input type="text" id="from" class="form-control" :value=loggedInUser.email />
-            <div class="btn-group">
-              <button
-                type="button"
-                id="connect"
-                class="btn btn-sm btn-outline-secondary"
-                onclick="connect()"
-              >Connect</button>
-              <button
-                type="button"
-                id="disconnect"
-                class="btn btn-sm btn-outline-secondary"
-                onclick="disconnect()"
-                disabled
-              >Disconnect</button>
-            </div>
+  <div class="section">
+    <h2 class="title">Chat</h2>
+
+    <div class="columns">
+      <div class="column is-half">
+        <div class="columns">
+          <div class="column is-half">
+            <input type="text" id="from" class="input" :value=loggedInUser.email />
+          </div>
+          <div class="buttons has-addons level-right">
+            <b-button
+              type="button"
+              id="connect"
+              class="button is-success"
+              onclick="connect()"
+            >Connect
+            </b-button>
+            <b-button
+              type="button"
+              id="disconnect"
+              class="button is-danger"
+              onclick="disconnect()"
+              disabled
+            >Disconnect</b-button>
           </div>
         </div>
-        <div class="mb-3" id="users" style="display: none;">
+
+        <div class="columns" id="users" style="display: none;">
           <span id="active-users-span"></span>
-          <ul id="active-users" class="list-group list-group-horizontal-sm">
-          </ul>
         </div>
-        <div id="divSelectedUser" class="mb-3" style="display: none;">
+
+        <div class="columns">
+          <ul id="active-users" class=""></ul>
+        </div>
+
+        <div id="divSelectedUser" class="columns" style="display: none;">
           <span id="selectedUser" class="badge badge-secondary"></span> Selected
         </div>
-        <div class="mb-3">
-          <div class="input-group" id="sendmessage" style="display: none;">
-            <input type="text" id="message" class="form-control" placeholder="Message" />
-            <div class="input-group-append">
-              <button id="send" class="btn btn-primary" onclick="send()">Send</button>
-            </div>
+
+        <div class="columns">
+          <div class="field" id="sendmessage" style="display: none;">
+            <input type="text" id="message" class="input" placeholder="Your message"/>
+            <b-button id="send" class="button is-info" onclick="send()">Send</b-button>
           </div>
         </div>
       </div>
-      <div class="col-md-6">
-        <div id="content"></div>
-        <div>
-          <span class="float-right">
-            <button
+
+      <div class="column is-half">
+        <div class="columns">
+          <div>
+            <b-button
               id="clear"
-              class="btn btn-primary"
+              class="button is-primary"
               onclick="clearMessages()"
               style="display: none;"
-            >Clear</button>
-          </span>
+            >Clear</b-button>
+          </div>
+          <div id="response"></div>
         </div>
-        <div id="response"></div>
+
+        <div class="columns">
+          <div id="content"></div>
+        </div>
       </div>
     </div>
   </div>

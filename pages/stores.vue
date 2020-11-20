@@ -92,7 +92,7 @@
       </b-table-column>
 
       <b-table-column v-slot="props">
-        <div class="buttons has-addons">
+        <div class="buttons has-addons level-right">
           <b-button type="is-primary" outlined @click="openModalItemCreate(props.row.id)">
             <b-icon icon="plus-box-multiple"></b-icon>
           </b-button>
