@@ -50,7 +50,9 @@
           </div>
           <div class="control column">
             <button type="submit" class="button is-dark is-fullwidth"
-            @click="$parent.close()">
+            @click="$parent.close(); $buefy.toast.open({
+                    message: 'New Store created!',
+                    type: 'is-success'})">
               Create Store
             </button>
           </div>

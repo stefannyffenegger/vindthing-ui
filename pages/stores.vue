@@ -32,14 +32,12 @@
       :card-layout="isCardLayout"
       :mobile-cards="isCardLayout"
       hoverable
-      checkable
       paginated
-      per-page="10"
+      per-page="20"
       sort-multiple
       detailed
       custom-detail-row
       detail-key="item.id"
-      @details-open="(row) => $buefy.toast.open(`Expanded ${row.name}`)"
       :show-detail-icon="true"
     >
       <template
@@ -55,44 +53,59 @@
         />
       </template>
 
-      <b-table-column field="id" label="ID" width="40" numeric v-slot="props">{{
-        props.row.id
-      }}</b-table-column>
+      <b-table-column
+        field="id"
+        label="ID"
+        width="40"
+        numeric
+        v-slot="props"
+      >
+        {{props.row.id}}
+      </b-table-column>
 
-      <b-table-column searchable field="name" label="Name" v-slot="props">{{
-        props.row.name
-      }}</b-table-column>
+      <b-table-column
+        searchable
+        field="name"
+        label="Name"
+        v-slot="props"
+      >
+        {{props.row.name}}
+      </b-table-column>
 
       <b-table-column
         searchable
         field="description"
         label="Description"
         v-slot="props"
-        >{{ props.row.description }}</b-table-column
       >
+        {{ props.row.description }}
+      </b-table-column>
 
       <b-table-column
         searchable
         field="location"
         label="Location"
         v-slot="props"
-        >{{ props.row.location }}</b-table-column
       >
-
-      <b-table-column label="Delete" v-slot="props">
-        <b-button @click="deleteStore(props.row.id)">Delete</b-button>
+        {{ props.row.location }}
       </b-table-column>
 
-      <b-table-column label="Add" v-slot="props">
-        <b-button @click="openModalItemCreate(props.row.id)">Add</b-button>
-      </b-table-column>
-
-      <b-table-column label="View" v-slot="props">
-        <b-button @click="openModalViewtems(props.row.id)">View</b-button>
+      <b-table-column v-slot="props">
+        <div class="buttons has-addons">
+          <b-button type="is-primary" outlined @click="openModalItemCreate(props.row.id)">
+            <b-icon icon="plus-box-multiple"></b-icon>
+          </b-button>
+          <b-button type="is-primary" outlined @click="openModalViewtems(props.row.id)">
+            <b-icon icon="eye"></b-icon>
+          </b-button>
+          <b-button type="is-danger" outlined @click="deleteStore(props.row.id)">
+            <b-icon icon="delete"></b-icon>
+          </b-button>
+        </div>
       </b-table-column>
 
       <template slot="detail" slot-scope="props">
-        <tr>
+        <tr class="small">
           <th></th>
           <th></th>
           <th>ID</th>
@@ -101,7 +114,7 @@
           <th></th>
           <th></th>
         </tr>
-        <tr v-for="item in props.row.items" :key="item.id">
+        <tr v-for="item in props.row.items" :key="item.id" class="small">
           <td></td>
           <td></td>
           <td>
@@ -143,7 +156,7 @@ export default {
     getItems() {
         const index = this.$store.state.stores.stores.findIndex(store => store.id === this.getFocusedStoreId );
         return this.$store.state.stores.stores[index].items
-    },
+    }
   },
   methods: {
     async deleteStore(store_id) {
@@ -156,11 +169,11 @@ export default {
     openModalViewtems(storeId) {
       this.$store.dispatch("stores/setFocusedStoreId", storeId);
       this.isComponentModalViewItemsActive = true
-    },
+    }
   },
 
   mounted() {
     this.$store.dispatch("stores/getStores");
-  },
+  }
 };
 </script>
