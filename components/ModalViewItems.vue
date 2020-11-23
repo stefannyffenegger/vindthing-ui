@@ -67,7 +67,7 @@
       >
 
       <b-table-column label="Delete" v-slot="props">
-        <b-button @click="deleteStore(props.row.id)">Delete</b-button>
+        <b-button @click="deleteItem(props.row)">Delete</b-button>
       </b-table-column>
 
     </b-table>
@@ -97,8 +97,9 @@ export default {
     },
   },
   methods: {
-    async deleteStore(store_id) {
-      this.$store.dispatch("stores/deleteStore", store_id);
+    async deleteItem(item) {
+      item.storeId = this.getFocusedStoreId
+      this.$store.dispatch("stores/deleteItem", item);
     },
     openModalItemCreate(storeId) {
       this.$store.dispatch("stores/setFocusedStoreId", storeId);

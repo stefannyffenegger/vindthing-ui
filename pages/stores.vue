@@ -38,7 +38,7 @@
       sort-multiple
       detailed
       custom-detail-row
-      detail-key="item.id"
+      detail-key="id"
       :show-detail-icon="true"
     >
       <template

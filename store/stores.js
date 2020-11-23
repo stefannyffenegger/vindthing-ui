@@ -30,7 +30,13 @@ export const mutations = {
         const index = state.stores.findIndex(store => store.id === item.storeId );
         console.log("index:" + index)
         delete item.storeId;
+        if (state.stores[index].items == null) { state.stores[index].items = [];}
         state.stores[index].items.push(item)
+    },
+    REMOVE_ITEM(state, item) {
+        const index = state.stores.findIndex(store => store.id === item.storeId );
+        console.log("index:" + index)
+        state.stores[index].items.pull(item)
     },
     SET_FOCUSED_STORE_ID(state, store_id) {
         state.focusedStoreId = store_id
@@ -85,7 +91,17 @@ export const actions = {
 
         commit('ADD_ITEM', res.data)
     },
+    async deleteItem({ commit }, item) {
 
+        let res = await this.$axios.post("/api/item/delete", {
+            id: item.id
+        });
+        console.log(res);
+
+        ///////////
+        // Anschauen
+        commit('REMOVE_ITEM', item)
+    },
 
     async setFocusedStoreId({ commit }, store_id) {
         commit('SET_FOCUSED_STORE_ID', store_id)
