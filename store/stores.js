@@ -8,6 +8,7 @@ export const mutations = {
         state.stores = stores
     },
     ADD_STORE(state, store) {
+        store.items = []
         state.stores.push(store)
     },
     REMOVE_STORE(state, store_id) {
@@ -28,9 +29,7 @@ export const mutations = {
     },
     ADD_ITEM(state, item) {
         const index = state.stores.findIndex(store => store.id === item.storeId );
-        console.log("index:" + index)
         delete item.storeId;
-        if (state.stores[index].items == null) { state.stores[index].items = [];}
         state.stores[index].items.push(item)
     },
     REMOVE_ITEM(state, item) {

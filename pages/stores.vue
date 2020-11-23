@@ -118,7 +118,7 @@
           <th></th>
           <th></th>
         </tr>
-        <tr v-for="item in props.row.items" :key="item.id" class="small">
+        <tr v-for="item in $store.state.stores.stores[props.index].items" :key="item.id" class="small">
           <td></td>
           <td></td>
           <td>
