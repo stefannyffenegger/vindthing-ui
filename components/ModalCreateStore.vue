@@ -91,20 +91,19 @@ export default {
 
   mounted() {
     if (this.getFocusedStoreId != null) {
-      const storeIndex = this.$store.state.stores.stores.findIndex(
+      var storeIndex = this.$store.state.stores.stores.findIndex(
         (store) => store.id === this.getFocusedStoreId
       );
 
       this.form.name = this.$store.state.stores.stores[storeIndex].name;
-      this.form.description = this.$store.state.stores.stores[
-        storeIndex
-      ].description;
+      this.form.description = this.$store.state.stores.stores[storeIndex].description;
       this.form.location = this.$store.state.stores.stores[storeIndex].location;
     }
   },
   destroyed() {
     this.$store.dispatch("stores/setFocusedItemId", null);
     this.$store.dispatch("stores/setFocusedStoreId", null);
+    this.form = [];
   },
 
   methods: {

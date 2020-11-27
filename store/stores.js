@@ -47,7 +47,18 @@ export const mutations = {
         if (storeIndex >= 0 && itemIndex >= 0) {
             state.stores[storeIndex].items.splice(itemIndex, 1, item);
         }
+    },
+    MOVE_ITEM(state, item) {
+        var storeIndex = state.stores.findIndex(store => store.id === item.newStoreId );
+        var tempOldStoreId = item.oldStoreId
+        delete item.newStoreId;
+        delete item.oldStoreId;
+        state.stores[storeIndex].items.push(item)
 
+        storeIndex = state.stores.findIndex(store => store.id === tempOldStoreId );
+        var itemIndex = state.stores[storeIndex].items.findIndex(itemInStore => itemInStore.id === item.id );
+
+        if (storeIndex >= 0 && itemIndex >= 0) {state.stores[storeIndex].items.splice(itemIndex, 1);}
     },
     SET_FOCUSED_STORE_ID(state, store_id) {
         state.focusedStoreId = store_id
@@ -131,6 +142,22 @@ export const actions = {
         ///////////
         // Anschauen
         commit('UPDATE_ITEM', res.data)
+    },
+    async moveItem({ commit }, form) {
+
+        let res = await this.$axios.post("/api/item/move", {
+            id: form.itemId,
+            storeId: form.newStoreId,
+        });
+
+        ////////////////
+        /// Inefficent
+        res.data.oldStoreId = form.oldStoreId
+        res.data.newStoreId = form.newStoreId
+
+        ///////////
+        // Anschauen
+        commit('MOVE_ITEM', res.data)
     },
 
     async setFocusedStoreId({ commit }, store_id) {

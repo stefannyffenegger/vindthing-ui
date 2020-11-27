@@ -62,6 +62,7 @@ export default {
   data() {
     return {
       form: {
+        itemId: "",
         oldStoreId: "",
         newStoreId: "",
       },
@@ -72,6 +73,7 @@ export default {
   computed: {
     ...mapGetters({
       getFocusedStoreId: "stores/getFocusedStoreId",
+      getFocusedItemId: "stores/getFocusedItemId",
     }),
     filteredDataObj() {
       return this.$store.state.stores.stores.filter((option) => {
@@ -92,11 +94,13 @@ export default {
 
   methods: {
     async moveItem() {
-      if (this.getFocusedStoreId != form.newStoreId) {
+      if (this.getFocusedStoreId != this.form.newStoreId) {
         this.form.oldStoreId = this.getFocusedStoreId;
+        this.form.newStoreId = this.selected.id;
+        this.form.itemId = this.getFocusedItemId;
         this.$store.dispatch("stores/moveItem", this.form);
+        this.$store.dispatch("stores/setFocusedStoreId", this.form.newStoreId);
         this.form = [];
-        this.$store.dispatch("stores/setFocusedStoreId", form.newStoreId);
       }
     },
   },
