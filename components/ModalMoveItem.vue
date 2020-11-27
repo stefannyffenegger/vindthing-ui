@@ -5,7 +5,8 @@
     </header>
     <div class="modal-card-body">
       <form method="post" @submit.prevent="moveItem">
-        <div>
+        <div class="columns">
+          <div class="column">
           <b-field label="Find a Store">
             <b-autocomplete
               v-model="searchSpecificStore"
@@ -15,11 +16,12 @@
               field="name"
               @select="(option) => (selected = option)"
               :clearable="true"
+              max-width=300px
               append-to-body
-              max-height=300px
             >
             </b-autocomplete>
           </b-field>
+          </div>
         </div>
 
         <br>
@@ -108,8 +110,11 @@ export default {
 </script>
 
 
-<style lang="css" scoped>
+<style lang="css">
 .modal {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.autocomplete .dropdown-menu {
+  min-width: 300px !important;
 }
 </style>

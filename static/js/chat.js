@@ -3,6 +3,7 @@ var selectedUser = null;
 var userName = $("#from").val();
 
 const chatServer = "http://localhost:8080";
+connect();
 
 function setConnected(connected) {
     $("#from").prop("disabled", connected);
@@ -18,6 +19,13 @@ function setConnected(connected) {
 }
 
 function connect() {
+    this.$nuxt.$buefy.notification.open({
+    duration: 5000,
+      message: `Something's not good, also I'm on <b>bottom</b>`,
+      position: 'is-bottom-right',
+      type: 'is-danger',
+      hasIcon: true
+  });
     userName = $("#from").val();
     //check if username is set
     if (userName == null || userName === "") {
