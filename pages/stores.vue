@@ -9,15 +9,15 @@
       New Store
     </button>
 
-    <b-modal v-model="isComponentModalStoreActive">
-      <LazyModalCreateStore></LazyModalCreateStore>
+    <b-modal trap-focus v-model="isComponentModalStoreActive">
+        <LazyModalCreateStore></LazyModalCreateStore>
     </b-modal>
 
     <b-modal v-model="isComponentModalItemActive">
       <LazyModalCreateItem></LazyModalCreateItem>
     </b-modal>
 
-    <b-modal v-model="isComponentModalViewItemsActive">
+    <b-modal full-screen v-model="isComponentModalViewItemsActive">
       <LazyModalViewItems></LazyModalViewItems>
     </b-modal>
 
@@ -55,16 +55,6 @@
       </template>
 
       <b-table-column
-        field="id"
-        label="ID"
-        width="40"
-        numeric
-        v-slot="props"
-      >
-        {{props.row.id}}
-      </b-table-column>
-
-      <b-table-column
         searchable
         field="name"
         label="Name"
@@ -93,6 +83,9 @@
 
       <b-table-column v-slot="props">
         <div class="buttons has-addons level-right">
+          <b-button type="is-primary" outlined @click="openModalStoreUpdate(props.row.id)">
+            <b-icon icon="plus-box-multiple"></b-icon>
+          </b-button>
           <b-button type="is-primary" outlined @click="openModalItemCreate(props.row.id)">
             <b-icon icon="plus-box-multiple"></b-icon>
           </b-button>
@@ -111,8 +104,6 @@
       >
         <tr class="small">
           <th></th>
-          <th></th>
-          <th>ID</th>
           <th>Name</th>
           <th>Quantity</th>
           <th></th>
@@ -120,10 +111,6 @@
         </tr>
         <tr v-for="item in $store.state.stores.stores[props.index].items" :key="item.id" class="small">
           <td></td>
-          <td></td>
-          <td>
-            {{ item.id }}
-          </td>
           <td>
             {{ item.name }}
           </td>
@@ -169,6 +156,10 @@ export default {
     openModalItemCreate(storeId) {
       this.$store.dispatch("stores/setFocusedStoreId", storeId);
       this.isComponentModalItemActive = true
+    },
+    openModalStoreUpdate(storeId) {
+      this.$store.dispatch("stores/setFocusedStoreId", storeId);
+      this.isComponentModalStoreActive = true
     },
     openModalViewtems(storeId) {
       this.$store.dispatch("stores/setFocusedStoreId", storeId);

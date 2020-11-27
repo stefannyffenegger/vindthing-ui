@@ -1,6 +1,7 @@
 export const state = () => ({
     stores: [],
-    focusedStoreId: null
+    focusedStoreId: null,
+    focusedItemId: null
 })
 
 export const mutations = {
@@ -21,11 +22,11 @@ export const mutations = {
         if (index >= 0) {state.stores.splice(index, 1);}
 
     },
-    UPDATE_STORE(state, { store }) {
-        state.stores.push({
-            text,
-            done: false
-        })
+    UPDATE_STORE(state, store) {
+        const storeIndex = state.stores.findIndex(storeObject => storeObject.id === store.id );
+        if (storeIndex >= 0 ) {
+            state.stores.splice(storeIndex, 1, store);
+        }
     },
     ADD_ITEM(state, item) {
         const index = state.stores.findIndex(store => store.id === item.storeId );
@@ -33,12 +34,26 @@ export const mutations = {
         state.stores[index].items.push(item)
     },
     REMOVE_ITEM(state, item) {
-        const index = state.stores.findIndex(store => store.id === item.storeId );
-        console.log("index:" + index)
-        state.stores[index].items.pull(item)
+        const storeIndex = state.stores.findIndex(store => store.id === item.storeId );
+        const itemIndex = state.stores[storeIndex].items.findIndex(itemInStore => itemInStore.id === item.id );
+
+        if (storeIndex >= 0 && itemIndex >= 0) {state.stores[storeIndex].items.splice(itemIndex, 1);}
+    },
+    UPDATE_ITEM(state, item) {
+        const storeIndex = state.stores.findIndex(store => store.id === item.storeId );
+        const itemIndex = state.stores[storeIndex].items.findIndex(itemInStore => itemInStore.id === item.itemId );
+        delete item.storeId;
+        delete item.itemId;
+        if (storeIndex >= 0 && itemIndex >= 0) {
+            state.stores[storeIndex].items.splice(itemIndex, 1, item);
+        }
+
     },
     SET_FOCUSED_STORE_ID(state, store_id) {
         state.focusedStoreId = store_id
+    },
+    SET_FOCUSED_ITEM_ID(state, item_id) {
+        state.focusedItemId = item_id
     },
 }
 
@@ -53,25 +68,24 @@ export const actions = {
             description: form.description,
             location: form.location
         });
-        console.log(res.data);
 
         commit('ADD_STORE', res.data)
     },
-    async updateStore() {
-        let res = await this.$axios.post("/store/add", {
-            name: this.name,
-            description: this.description,
-            location: this.location
+    async updateStore({ commit }, form) {
+        let res = await this.$axios.post("/api/store/update", {
+            id: form.storeId,
+            name: form.name,
+            description: form.description,
+            location: form.location
         });
-        console.log(res);
-        this.stores.push(res);
+
+        commit('UPDATE_STORE', res.data)
     },
     async deleteStore({ commit }, store_id) {
 
         let res = await this.$axios.post("/api/store/delete", {
             id: store_id
         });
-        console.log(res);
 
         ///////////
         // Anschauen
@@ -95,15 +109,35 @@ export const actions = {
         let res = await this.$axios.post("/api/item/delete", {
             id: item.id
         });
-        console.log(res);
 
         ///////////
         // Anschauen
         commit('REMOVE_ITEM', item)
     },
+    async updateItem({ commit }, form) {
+
+        let res = await this.$axios.post("/api/item/update", {
+            id: form.itemId,
+            name: form.name,
+            description: form.description,
+            quantity: form.quantity
+        });
+
+        ////////////////
+        /// Inefficent
+        res.data.storeId = form.storeId
+        res.data.itemId = form.itemId
+
+        ///////////
+        // Anschauen
+        commit('UPDATE_ITEM', res.data)
+    },
 
     async setFocusedStoreId({ commit }, store_id) {
         commit('SET_FOCUSED_STORE_ID', store_id)
+    },
+    async setFocusedItemId({ commit }, item_id) {
+        commit('SET_FOCUSED_ITEM_ID', item_id)
     },
 }
 
@@ -113,5 +147,8 @@ export const getters = {
     },
     getFocusedStoreId(state) {
         return state.focusedStoreId
+    },
+    getFocusedItemId(state) {
+        return state.focusedItemId
     }
 }

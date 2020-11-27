@@ -1,7 +1,9 @@
 <template>
-  <div class="container m-5">
-    <h2 class="title">Stores</h2>
-    <div class="content">
+  <div class="modal-card" style="width: auto">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Stores</p>
+    </header>
+    <div class="modal-card-body">
       <form method="post" @submit.prevent="createStore">
         <div class="field">
           <label class="label">Name</label>
@@ -49,11 +51,18 @@
             </button>
           </div>
           <div class="control column">
-            <button type="submit" class="button is-dark is-fullwidth"
-            @click="$parent.close(); $buefy.toast.open({
-                    message: 'New Store created!',
-                    type: 'is-success',
-                    duration: 5000});">
+            <button
+              type="submit"
+              class="button is-dark is-fullwidth"
+              @click="
+                $parent.close();
+                $buefy.toast.open({
+                  message: 'New Store created!',
+                  type: 'is-success',
+                  duration: 5000,
+                });
+              "
+            >
               Create Store
             </button>
           </div>
@@ -76,9 +85,37 @@ export default {
       },
     };
   },
+  computed: mapGetters({
+    getFocusedStoreId: "stores/getFocusedStoreId",
+  }),
+
+  mounted() {
+    if (this.getFocusedStoreId != null) {
+      const storeIndex = this.$store.state.stores.stores.findIndex(
+        (store) => store.id === this.getFocusedStoreId
+      );
+
+      this.form.name = this.$store.state.stores.stores[storeIndex].name;
+      this.form.description = this.$store.state.stores.stores[
+        storeIndex
+      ].description;
+      this.form.location = this.$store.state.stores.stores[storeIndex].location;
+    }
+  },
+  destroyed() {
+    this.$store.dispatch("stores/setFocusedItemId", null);
+    this.$store.dispatch("stores/setFocusedStoreId", null);
+  },
 
   methods: {
     async createStore() {
+      if (this.getFocusedStoreId != null) {
+        this.form.storeId = this.getFocusedStoreId;
+        this.$store.dispatch("stores/updateStore", this.form);
+        this.form = [];
+        return;
+      }
+
       console.log(this.form);
       this.$store.dispatch("stores/createStore", this.form);
       this.form = [];

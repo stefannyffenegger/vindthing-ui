@@ -1,7 +1,9 @@
 <template>
-  <div class="container m-5">
-    <h2 class="title">Item</h2>
-    <div class="content">
+  <div class="modal-card" style="width: auto">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Item</p>
+    </header>
+    <div class="modal-card-body">
       <form method="post" @submit.prevent="createItem">
         <div class="field">
           <label class="label">Name</label>
@@ -49,10 +51,8 @@
             </button>
           </div>
           <div class="control column">
-            <button type="submit" class="button is-dark is-fullwidth"
-            @click="$parent.close()">
-              Create Item
-            </button>
+            <button v-if="getFocusedItemId" type="submit" class="button is-dark is-fullwidth" @click="$parent.close()">Update Item</button>
+            <button v-else type="submit" class="button is-dark is-fullwidth" @click="$parent.close()">Create Item</button>
           </div>
         </div>
       </form>
@@ -64,6 +64,7 @@
 import { mapMutations, mapGetters } from "vuex";
 
 export default {
+
   data() {
     return {
       form: {
@@ -75,9 +76,33 @@ export default {
   },
   computed: mapGetters({
     getFocusedStoreId: "stores/getFocusedStoreId",
+    getFocusedItemId: "stores/getFocusedItemId",
   }),
+
+  mounted() {
+    if (this.getFocusedItemId != null) {
+        const storeIndex = this.$store.state.stores.stores.findIndex(store => store.id === this.getFocusedStoreId );
+        const itemIndex = this.$store.state.stores.stores[storeIndex].items.findIndex(itemInStore => itemInStore.id === this.getFocusedItemId );
+        
+        this.form.name = this.$store.state.stores.stores[storeIndex].items[itemIndex].name
+        this.form.description = this.$store.state.stores.stores[storeIndex].items[itemIndex].description
+        this.form.quantity = this.$store.state.stores.stores[storeIndex].items[itemIndex].quantity
+    }
+  },
+  destroyed() {
+    this.$store.dispatch("stores/setFocusedItemId", null);
+  },
+
   methods: {
     async createItem() {
+      if (this.getFocusedItemId != null) {
+        this.form.storeId = this.getFocusedStoreId;
+        this.form.itemId = this.getFocusedItemId;
+        this.$store.dispatch("stores/updateItem", this.form);
+        this.form = [];
+        return
+      }
+
       this.form.storeId = this.getFocusedStoreId;
       this.$store.dispatch("stores/createItem", this.form);
       this.form = [];
