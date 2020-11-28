@@ -41,9 +41,8 @@ export const mutations = {
     },
     UPDATE_ITEM(state, item) {
         const storeIndex = state.stores.findIndex(store => store.id === item.storeId );
-        const itemIndex = state.stores[storeIndex].items.findIndex(itemInStore => itemInStore.id === item.itemId );
+        const itemIndex = state.stores[storeIndex].items.findIndex(itemInStore => itemInStore.id === item.id );
         delete item.storeId;
-        delete item.itemId;
         if (storeIndex >= 0 && itemIndex >= 0) {
             state.stores[storeIndex].items.splice(itemIndex, 1, item);
         }
@@ -102,6 +101,14 @@ export const actions = {
         // Anschauen
         commit('REMOVE_STORE', store_id)
     },
+    async updateSharedUsers({ commit }, payloadSharedUsers) {
+        let res = await this.$axios.post("/api/store/user/update", {
+            sharedUsers: payloadSharedUsers.sharedUsers,
+            storeId: payloadSharedUsers.storeId
+        });
+
+        commit('UPDATE_STORE', res.data)
+    },
     async createItem({ commit }, form) {
         let res = await this.$axios.post("/api/item/add", {
             name: form.name,
@@ -131,13 +138,28 @@ export const actions = {
             id: form.itemId,
             name: form.name,
             description: form.description,
-            quantity: form.quantity
+            quantity: form.quantity,
+            inStore: form.inStore
         });
 
         ////////////////
         /// Inefficent
         res.data.storeId = form.storeId
-        res.data.itemId = form.itemId
+
+        ///////////
+        // Anschauen
+        commit('UPDATE_ITEM', res.data)
+    },
+    async incrementCounter({ commit }, form) {
+
+        let res = await this.$axios.post("/api/item/update", {
+            id: form.itemId,
+            inStore: form.inStore
+        });
+
+        ////////////////
+        /// Inefficent
+        res.data.storeId = form.storeId
 
         ///////////
         // Anschauen
