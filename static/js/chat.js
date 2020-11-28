@@ -3,7 +3,7 @@ var selectedUser = null;
 var userName = $("#from").val();
 
 const chatServer = "http://localhost:8080";
-connect();
+connect(userName);
 
 function setConnected(connected) {
     $("#from").prop("disabled", connected);
@@ -18,15 +18,50 @@ function setConnected(connected) {
     }
 }
 
-function connect() {
-    this.$nuxt.$buefy.notification.open({
+function connectionSuccessSnackbar(){
+  this.$nuxt.$buefy.snackbar.open("Chat connected!");
+}
+
+function connectionWarningSnackbar() {
+  this.$nuxt.$buefy.snackbar.open({
+    message: 'Chat connection lost!',
+    type: 'is-warning',
+    position: 'is-top',
+    actionText: 'Retry',
+    indefinite: true,
+    queue: false,
+    onAction: () => {
+      connect();
+    }
+  })
+}
+
+function userSelectWarningSnackbar(msg) {
+  this.$nuxt.$buefy.snackbar.open({
+    message: msg,
+    type: 'is-warning',
+    position: 'is-top',
+    queue: false
+  })
+}
+
+function messageNotification(msg) {
+  this.$nuxt.$buefy.notification.open({
     duration: 5000,
-      message: `Something's not good, also I'm on <b>bottom</b>`,
-      position: 'is-bottom-right',
-      type: 'is-danger',
-      hasIcon: true
-  });
-    userName = $("#from").val();
+    message: msg,
+    type: "is-info is-light",
+    iconPack: "mdi",
+    hasIcon: true,
+    icon: "account",
+    queue: false
+  })
+}
+
+/**
+ * Connect to server and subscribe
+ * @param userName
+ */
+function connect(userName) {
     //check if username is set
     if (userName == null || userName === "") {
         alert('Please input a nickname!');
@@ -40,15 +75,18 @@ function connect() {
             stompClient = Stomp.over(socket);
 
             stompClient.connect({ username: userName }, function () {
-                stompClient.subscribe('/topic/broadcast', function (output) {
-                    showMessage(createTextNode(JSON.parse(output.body)));
-                });
+                //stompClient.subscribe('/topic/broadcast', function (output) {
+                //    console.log("BROADCAST SUBSCRIBE");
+                //    showMessage(createTextNode(JSON.parse(output.body)));
+                //});
 
                 stompClient.subscribe('/topic/active', function () {
                     updateUsers(userName);
                 });
 
                 stompClient.subscribe('/user/queue/messages', function (output) {
+                    console.log("MESSAGES SUBSCRIBE");
+
                     showMessage(createTextNode(JSON.parse(output.body)));
                 });
 
@@ -59,13 +97,17 @@ function connect() {
             });
 
         }).done(function () {
-            // alert('Request done!');
+            connectionSuccessSnackbar();
         }).fail(function (jqxhr, settings, ex) {
-            console.log('failed, ' + ex);
+            console.log('Connection failed, ' + ex);
+            connectionWarningSnackbar();
         }
         );
 }
 
+/**
+ * Disconnect websocket
+ */
 function disconnect() {
     if (stompClient != null) {
         $.post(chatServer + '/api/chat/user-disconnect',
@@ -100,10 +142,13 @@ function sendBroadcast(json) {
     stompClient.send("/app/broadcast", {}, JSON.stringify(json));
 }
 
+/**
+ * Send a message
+ */
 function send() {
     var text = $("#message").val();
     if (selectedUser == null) {
-        alert('Please select a user.');
+        userSelectWarningSnackbar('Please select a user first');
         return;
     }
     stompClient.send("/ws/chat", { 'sender': userName },
@@ -128,17 +173,22 @@ function createTextNode(messageObj) {
     if (messageObj.from != "server") {
         addTo = '<a href="javascript:void(0)" onclick="setSelectedUser(\'' + fromTo + '\')">' + addTo + '</a>'
     }
-    return '<div class="row alert ' + classAlert + '"><div class="col-md-8">' +
-        messageObj.text +
-        '</div><div class="col-md-4 text-right"><small>[<b>' +
-        addTo +
-        '</b> ' +
-        messageObj.time +
-        ']</small>' +
-        '</div></div>';
+
+    var htmlMessage = '<div class="row alert ' + classAlert + '"><div class="">' +
+      messageObj.text +
+      '</div><div class=""><small>[<b>' +
+      addTo +
+      '</b> ' +
+      messageObj.time +
+      ']</small>' +
+      '</div></div>';
+
+    return htmlMessage;
 }
 
 function showMessage(message) {
+
+    messageNotification(message);
     $("#content").html($("#content").html() + message);
     $("#clear").show();
 }
@@ -162,6 +212,7 @@ function updateUsers(userName) {
     // console.log('List of users : ' + userList);
     var activeUserSpan = $("#active-users-span");
     var activeUserUL = $("#active-users");
+    var availableUsers = $("#available-users");
 
     var index;
     activeUserUL.html('');
@@ -175,8 +226,21 @@ function updateUsers(userName) {
         success: function (userList) {
             if (userList.length == 0) {
                 activeUserSpan.html('<p><i>No active users found.</i></p>');
+                availableUsers.html(
+                  '<div class="column">\n' +
+                  '<b-tabs type="is-boxed" vertical>' +
+                  '<b-tab-item label=test' + 'tteeesst' + '</b-tab-item>' +
+                  '</b-tabs>\n' +
+                  '</div>\n');
             } else {
                 activeUserSpan.html('<p class="text-muted">click on user to begin chat</p>');
+                //availableUsers.html('<p><i>No active users found.</i></p>');
+              availableUsers.html(
+                '<div class="column">\n' +
+                '<b-tabs type="is-boxed" vertical>' +
+                '<b-tab-item label=test>' + 'tteeesst' + '</b-tab-item>' +
+                '</b-tabs>\n' +
+                '</div>\n');
 
                 for (index = 0; index < userList.length; ++index) {
                     if (userList[index] != userName) {
@@ -194,6 +258,27 @@ function updateUsers(userName) {
             alert("error occurred");
         }
     });
+}
+
+function createUserTab(tabLabel, content){
+    return '<b-tab-item label=' + tabLabel+'>\n' + content + '</b-tab-item>';
+}
+
+function createUserTabs(tabLabels, content, userName){
+    var html = "";
+    console.log(tabLabels.length);
+    for(let i=0; i<tabLabels.length - 1; i++){
+        if (tabLabels!=userName){
+            html = html + (createUserTab(tabLabels[i], content));
+        }
+    }
+    console.log("sadfsaf"+html);
+
+    return '<div class="column">\n' +
+        '<b-tabs type="is-boxed" vertical>' +
+        html +
+        '</b-tabs>\n' +
+        '</div>\n';
 }
 
 function createUserNode(username, index) {

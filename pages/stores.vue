@@ -84,7 +84,7 @@
       <b-table-column v-slot="props">
         <div class="buttons has-addons level-right">
           <b-button type="is-primary" outlined @click="openModalStoreUpdate(props.row.id)">
-            <b-icon icon="plus-box-multiple"></b-icon>
+            <b-icon icon="pencil"></b-icon>
           </b-button>
           <b-button type="is-primary" outlined @click="openModalItemCreate(props.row.id)">
             <b-icon icon="plus-box-multiple"></b-icon>
