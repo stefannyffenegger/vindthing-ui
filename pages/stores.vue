@@ -87,7 +87,7 @@
             <b-icon icon="pencil"></b-icon>
           </b-button>
           <b-button type="is-primary" outlined @click="openModalItemCreate(props.row.id)">
-            <b-icon icon="plus-box-multiple"></b-icon>
+            <b-icon icon="plus"></b-icon>
           </b-button>
           <b-button type="is-primary" outlined @click="openModalViewtems(props.row.id)">
             <b-icon icon="eye"></b-icon>
