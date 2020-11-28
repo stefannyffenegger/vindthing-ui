@@ -11,11 +11,11 @@
             <b-autocomplete
               v-model="searchSpecificStore"
               placeholder="e.g. Basement"
-              :open-on-focus="true"
+              open-on-focus
               :data="filteredDataObj"
               field="name"
               @select="(option) => (selected = option)"
-              :clearable="true"
+              clearable
               max-width=300px
               append-to-body
             >
