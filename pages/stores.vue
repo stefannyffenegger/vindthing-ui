@@ -84,16 +84,24 @@
       <b-table-column v-slot="props">
         <div class="buttons has-addons level-right">
           <b-button type="is-primary" outlined @click="openModalStoreUpdate(props.row.id)">
+            <b-tooltip label="Edit Store" type="is-primary is-light">
             <b-icon icon="pencil"></b-icon>
+          </b-tooltip>
           </b-button>
           <b-button type="is-primary" outlined @click="openModalItemCreate(props.row.id)">
+            <b-tooltip label="Add Item" type="is-primary is-light">
             <b-icon icon="plus"></b-icon>
+            </b-tooltip>
           </b-button>
           <b-button type="is-primary" outlined @click="openModalViewtems(props.row.id)">
+            <b-tooltip label="Open Store" type="is-primary is-light">
             <b-icon icon="eye"></b-icon>
+              </b-tooltip>
           </b-button>
-          <b-button type="is-danger" outlined @click="deleteStore(props.row.id)">
+          <b-button type="is-danger" outlined @click="confirmDelete($store.state.stores.stores[props.index].name, props.row.id)">
+            <b-tooltip label="Delete Store" type="is-danger is-light">
             <b-icon icon="delete"></b-icon>
+            </b-tooltip>
           </b-button>
         </div>
       </b-table-column>
@@ -105,6 +113,7 @@
         <tr class="small">
           <th></th>
           <th>Name</th>
+          <th>Description</th>
           <th>Quantity</th>
           <th></th>
           <th></th>
@@ -113,6 +122,9 @@
           <td></td>
           <td>
             {{ item.name }}
+          </td>
+          <td>
+            {{ item.description }}
           </td>
           <td>
             {{ item.quantity }}
@@ -150,8 +162,19 @@ export default {
     }
   },
   methods: {
-    async deleteStore(store_id) {
+    async deleteStore(name, store_id) {
       this.$store.dispatch("stores/deleteStore", store_id);
+      this.$buefy.toast.open(name + ' deleted!')
+    },
+    confirmDelete(name, id) {
+      this.$buefy.dialog.confirm({
+        title: 'Deleting account',
+        message: 'Confirm to <b>delete</b> '+ name +'? This action cannot be undone.',
+        confirmText: 'Delete '+ name,
+        type: 'is-danger',
+        hasIcon: true,
+        onConfirm: () => this.deleteStore(name, id)
+      })
     },
     openModalItemCreate(storeId) {
       this.$store.dispatch("stores/setFocusedStoreId", storeId);

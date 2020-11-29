@@ -226,21 +226,11 @@ function updateUsers(userName) {
         success: function (userList) {
             if (userList.length == 0) {
                 activeUserSpan.html('<p><i>No active users found.</i></p>');
-                availableUsers.html(
-                  '<div class="column">\n' +
-                  '<b-tabs type="is-boxed" vertical>' +
-                  '<b-tab-item label=test' + 'tteeesst' + '</b-tab-item>' +
-                  '</b-tabs>\n' +
-                  '</div>\n');
+                //availableUsers.html();
             } else {
                 activeUserSpan.html('<p class="text-muted">click on user to begin chat</p>');
                 //availableUsers.html('<p><i>No active users found.</i></p>');
-              availableUsers.html(
-                '<div class="column">\n' +
-                '<b-tabs type="is-boxed" vertical>' +
-                '<b-tab-item label=test>' + 'tteeesst' + '</b-tab-item>' +
-                '</b-tabs>\n' +
-                '</div>\n');
+              //availableUsers.html();
 
                 for (index = 0; index < userList.length; ++index) {
                     if (userList[index] != userName) {

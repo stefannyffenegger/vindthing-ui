@@ -4,11 +4,6 @@
 
     <div class="columns">
       <div id="available-users"></div>
-      <div class="column">
-      <b-tabs type="is-boxed" vertical>
-        <b-tab-item label='test'>babo</b-tab-item>
-        </b-tabs>
-      </div>
     </div>
 
     <div class="columns">
@@ -53,6 +48,10 @@
 
       <div class="column is-half">
         <div class="columns">
+          <div id="content"></div>
+        </div>
+
+        <div class="columns">
           <div class="column">
             <b-button
               id="clear"
@@ -64,9 +63,7 @@
           <div id="response"></div>
         </div>
 
-        <div class="columns">
-          <div id="content"></div>
-        </div>
+
       </div>
 
     </div>

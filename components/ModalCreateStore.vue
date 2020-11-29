@@ -1,11 +1,11 @@
 <template>
   <div class="modal-card" style="width: auto">
     <header class="modal-card-head">
-      <p class="modal-card-title">Stores</p>
+      <p class="modal-card-title">Store</p>
     </header>
     <div class="modal-card-body">
       <b-tabs>
-        <b-tab-item label="Erstellen">
+        <b-tab-item label="Edit">
           <form method="post" @submit.prevent="createStore">
             <div class="field">
               <label class="label">Name</label>
