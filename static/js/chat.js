@@ -53,7 +53,8 @@ function messageNotification(msg) {
     iconPack: "mdi",
     hasIcon: true,
     icon: "account",
-    queue: false
+    queue: false,
+    position: 'is-bottom-right'
   })
 }
 

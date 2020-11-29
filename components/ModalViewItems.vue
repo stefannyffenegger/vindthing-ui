@@ -2,7 +2,7 @@
   <section class="section">
     <div class="modal-card" style="width: auto">
       <header class="modal-card-head">
-        <p class="modal-card-title">Items of {{this.getStore.name}}</p>
+        <p class="modal-card-title">Items of {{ this.getStore.name }}</p>
       </header>
       <div class="modal-card-body">
         <button
@@ -29,9 +29,8 @@
         <b-table
           :data="this.getItems"
           :card-layout="isCardLayout"
-          :mobile-cards="isCardLayout"
+          :mobile-cards=true
           hoverable
-          checkable
           paginated
           per-page="10"
           sort-multiple
@@ -68,7 +67,7 @@
             field="quantity"
             label="Quantity"
             v-slot="props"
-          >{{ props.row.location }}
+          >{{ props.row.quantity }}
           </b-table-column
           >
 
@@ -80,21 +79,29 @@
           </b-table-column>
 
           <b-table-column label="In Store" v-slot="props">
+            <b-tooltip label="Indicates if the Item is currently in the Store" type="is-primary is-light">
             <b-switch :value="props.row.inStore" type="is-primary" passive-type="is-dark"
                       @click.native="incrementCounter(props.row)"></b-switch>
+            </b-tooltip>
           </b-table-column>
 
           <b-table-column v-slot="props">
 
             <div class="buttons has-addons level-right">
               <b-button type="is-primary" outlined @click="updateItem(props.row)">
-                <b-icon icon="pencil"></b-icon>
+                <b-tooltip label="Edit Item" type="is-primary is-light">
+                  <b-icon icon="pencil"></b-icon>
+                </b-tooltip>
               </b-button>
               <b-button type="is-primary" outlined @click="moveItem(props.row)">
-                <b-icon icon="redo"></b-icon>
+                <b-tooltip label="Move Item to other Store" type="is-primary is-light">
+                  <b-icon icon="redo"></b-icon>
+                </b-tooltip>
               </b-button>
-              <b-button type="is-danger" outlined @click="deleteItem(props.row)">
-                <b-icon icon="delete"></b-icon>
+              <b-button type="is-danger" outlined @click="confirmDelete(props.row.name, props.row)">
+                <b-tooltip label="Delete Item" type="is-primary is-danger">
+                  <b-icon icon="delete"></b-icon>
+                </b-tooltip>
               </b-button>
             </div>
           </b-table-column>
@@ -129,7 +136,7 @@ export default {
       );
       return this.$store.state.stores.stores[index].items;
     },
-    getStore(){
+    getStore() {
       let index = this.$store.state.stores.stores.findIndex(
         (store) => store.id === this.getFocusedStoreId
       );
@@ -151,9 +158,21 @@ export default {
 
       this.$store.dispatch("stores/incrementCounter", payloadCounter);
     },
+
     async deleteItem(item) {
       item.storeId = this.getFocusedStoreId;
       this.$store.dispatch("stores/deleteItem", item);
+      this.$buefy.toast.open('Item deleted!')
+    },
+    confirmDelete(name, id) {
+      this.$buefy.dialog.confirm({
+        title: 'Delete Item',
+        message: 'Confirm to <b>delete</b> ' + name + '? This action cannot be undone.',
+        confirmText: 'Delete ' + name,
+        type: 'is-danger',
+        hasIcon: true,
+        onConfirm: () => this.deleteItem(id)
+      })
     },
     async updateItem(item) {
       this.$store.dispatch("stores/setFocusedItemId", item.id);

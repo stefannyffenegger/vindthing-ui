@@ -10,7 +10,7 @@
     </button>
 
     <b-modal trap-focus v-model="isComponentModalStoreActive">
-        <LazyModalCreateStore></LazyModalCreateStore>
+      <LazyModalCreateStore></LazyModalCreateStore>
     </b-modal>
 
     <b-modal v-model="isComponentModalItemActive">
@@ -21,7 +21,7 @@
       <LazyModalViewItems></LazyModalViewItems>
     </b-modal>
 
-    <hr />
+    <hr/>
 
     <div class="control">
       <b-switch v-model="isCardLayout">Card View</b-switch>
@@ -31,7 +31,7 @@
       :data="getAllStores"
       ref="table"
       :card-layout="isCardLayout"
-      :mobile-cards="isCardLayout"
+      :mobile-cards=true
       hoverable
       paginated
       per-page="20"
@@ -60,7 +60,14 @@
         label="Name"
         v-slot="props"
       >
-        {{props.row.name}}
+        <b-tooltip
+          label="itemTooltip"
+          size="is-small"
+          multilined
+          type="is-primary is-light"
+        >
+          {{ props.row.name }}
+        </b-tooltip>
       </b-table-column>
 
       <b-table-column
@@ -81,26 +88,57 @@
         {{ props.row.location }}
       </b-table-column>
 
+      <b-table-column>
+        <b-collapse class="card" animation="slide" aria-id="contentIdForA11y3">
+          <div
+            slot="trigger"
+            slot-scope="props"
+            class="card-header"
+            role="button"
+            aria-controls="contentIdForA11y3">
+            <p class="card-header-title">
+              Component
+            </p>
+            <a class="card-header-icon">
+              <b-icon
+                :icon="props.open ? 'menu-down' : 'menu-up'">
+              </b-icon>
+            </a>
+          </div>
+          <div class="card-content">
+            <div class="content">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
+              <a>#buefy</a>.
+            </div>
+          </div>
+          <footer class="card-footer">
+            <a class="card-footer-item">Save</a>
+            <a class="card-footer-item">Delete</a>
+          </footer>
+        </b-collapse>
+      </b-table-column>
+
       <b-table-column v-slot="props">
         <div class="buttons has-addons level-right">
           <b-button type="is-primary" outlined @click="openModalStoreUpdate(props.row.id)">
             <b-tooltip label="Edit Store" type="is-primary is-light">
-            <b-icon icon="pencil"></b-icon>
-          </b-tooltip>
+              <b-icon icon="pencil"></b-icon>
+            </b-tooltip>
           </b-button>
           <b-button type="is-primary" outlined @click="openModalItemCreate(props.row.id)">
             <b-tooltip label="Add Item" type="is-primary is-light">
-            <b-icon icon="plus"></b-icon>
+              <b-icon icon="plus"></b-icon>
             </b-tooltip>
           </b-button>
           <b-button type="is-primary" outlined @click="openModalViewtems(props.row.id)">
             <b-tooltip label="Open Store" type="is-primary is-light">
-            <b-icon icon="eye"></b-icon>
-              </b-tooltip>
+              <b-icon icon="eye"></b-icon>
+            </b-tooltip>
           </b-button>
-          <b-button type="is-danger" outlined @click="confirmDelete($store.state.stores.stores[props.index].name, props.row.id)">
+          <b-button type="is-danger" outlined
+                    @click="confirmDelete($store.state.stores.stores[props.index].name, props.row.id)">
             <b-tooltip label="Delete Store" type="is-danger is-light">
-            <b-icon icon="delete"></b-icon>
+              <b-icon icon="delete"></b-icon>
             </b-tooltip>
           </b-button>
         </div>
@@ -138,7 +176,7 @@
 </template>
 
 <script>
-import { mapMutations, mapGetters } from "vuex";
+import {mapMutations, mapGetters} from "vuex";
 
 export default {
   data() {
@@ -157,24 +195,28 @@ export default {
       getFocusedStoreId: "stores/getFocusedStoreId",
     }),
     getItems() {
-        const index = this.$store.state.stores.stores.findIndex(store => store.id === this.getFocusedStoreId );
-        return this.$store.state.stores.stores[index].items
+      const index = this.$store.state.stores.stores.findIndex(store => store.id === this.getFocusedStoreId);
+      return this.$store.state.stores.stores[index].items
     }
   },
   methods: {
-    async deleteStore(name, store_id) {
+    async deleteStore(store_id) {
       this.$store.dispatch("stores/deleteStore", store_id);
-      this.$buefy.toast.open(name + ' deleted!')
+      this.$buefy.toast.open('Store deleted!')
     },
     confirmDelete(name, id) {
       this.$buefy.dialog.confirm({
-        title: 'Deleting account',
-        message: 'Confirm to <b>delete</b> '+ name +'? This action cannot be undone.',
-        confirmText: 'Delete '+ name,
+        title: 'Delete Store',
+        message: 'Confirm to <b>delete</b> ' + name + '? This action cannot be undone.',
+        confirmText: 'Delete ' + name,
         type: 'is-danger',
         hasIcon: true,
-        onConfirm: () => this.deleteStore(name, id)
+        onConfirm: () => this.deleteStore(id)
       })
+    },
+    itemTooltip(){
+      $store.state.stores.stores[props.index].items;
+      return "TEST";
     },
     openModalItemCreate(storeId) {
       this.$store.dispatch("stores/setFocusedStoreId", storeId);

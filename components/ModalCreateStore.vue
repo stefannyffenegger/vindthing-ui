@@ -72,7 +72,7 @@
           </form>
         </b-tab-item>
 
-        <b-tab-item label="Permissions" v-if="this.getFocusedStoreId">
+        <b-tab-item label="Share" v-if="this.getFocusedStoreId">
           <b-field label="Shared Users">
             <b-taginput
               v-model="SharedUsersTags"
