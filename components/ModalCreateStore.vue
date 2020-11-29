@@ -52,7 +52,7 @@
                   Close
                 </button>
               </div>
-              <div class="control column">
+              <div class="control column" v-if="!this.getFocusedStoreId">
                 <button
                   type="submit"
                   class="button is-dark is-fullwidth"
@@ -68,39 +68,117 @@
                   Create Store
                 </button>
               </div>
+              <div class="control column" v-if="this.getFocusedStoreId">
+                <button
+                  type="submit"
+                  class="button is-dark is-fullwidth"
+                  @click="
+                    $parent.close();
+                    $buefy.toast.open({
+                      message: 'Store updated!',
+                      type: 'is-success',
+                      duration: 5000,
+                    });
+                  "
+                >
+                  Update Store
+                </button>
+              </div>
             </div>
           </form>
         </b-tab-item>
 
         <b-tab-item label="Share" v-if="this.getFocusedStoreId">
-          <b-field label="Shared Users">
-            <b-taginput
-              v-model="SharedUsersTags"
-              :data="filteredTags"
-              autocomplete
-              allow-new
-              ellipsis
-              maxlength="50"
-              has-counter
-              append-to-body
-              :disabled="checkOwner() ? false : true"
-              icon="label"
-              placeholder="Add a user"
-              @onclick="getFilteredTags"
-              @typing="getFilteredTags"
-            >
-            </b-taginput>
+          <div class="columns">
+            <div class="column">
+              <b-field label="Shared Users">
+                <b-taginput
+                  v-model="SharedUsersTags"
+                  :data="filteredTags"
+                  autocomplete
+                  allow-new
+                  ellipsis
+                  maxlength="50"
+                  has-counter
+                  append-to-body
+                  :disabled="checkOwner() ? false : true"
+                  icon="label"
+                  placeholder="Add a user"
+                  @onclick="getFilteredTags"
+                  @typing="getFilteredTags"
+                >
+                </b-taginput>
+              </b-field>
+            </div>
+          </div>
+
+          <div class="columns">
+            <div class="control column">
+              <button
+                @click.prevent="$parent.close()"
+                class="button is-dark is-fullwidth"
+              >
+                Close
+              </button>
+            </div>
+            <div class="control column">
+              <button
+                type="submit"
+                v-show="checkOwner()"
+                class="button is-dark is-fullwidth"
+                @click="updateSharedUsers();
+                $parent.close();
+                $buefy.toast.open({
+                  message: 'Store permissions updated!',
+                  type: 'is-success',
+                  duration: 5000,
+                });
+                "
+              >
+                Update Permissions
+              </button>
+            </div>
+          </div>
+        </b-tab-item>
+
+        <b-tab-item label="Comment" v-if="this.getFocusedStoreId">
+          <b-message title="bob@bob 2020-11-26" aria-close-label="Close message">
+            Sorry, broke the toaster, will bring a new one tomorrow
+          </b-message>
+          <b-message title="bob@bob 2020-11-28" aria-close-label="Close message">
+            Took the green socks
+          </b-message>
+        </b-tab-item>
+
+        <b-tab-item label="Picture" v-if="this.getFocusedStoreId">
+          <b-field>
+            <b-upload v-model="dropFiles"
+                      multiple
+                      drag-drop>
+              <section class="section">
+                <div class="content has-text-centered">
+                  <p>
+                    <b-icon
+                      icon="upload"
+                      size="is-large">
+                    </b-icon>
+                  </p>
+                  <p>Drop your files here or click to upload</p>
+                </div>
+              </section>
+            </b-upload>
           </b-field>
 
-          <div class="control column">
-            <button
-              type="submit"
-              v-show="checkOwner()"
-              class="button is-dark is-fullwidth"
-              @click="updateSharedUsers();$parent.close()"
-            >
-              Update Permissions
-            </button>
+          <div class="tags">
+            <span v-for="(file, index) in dropFiles"
+                  :key="index"
+                  class="tag is-primary">
+                {{ file.name }}
+                <button class="delete is-small"
+                        type="button"
+                        @click="deleteDropFile(index)">
+                </button>
+            </span>
           </div>
         </b-tab-item>
       </b-tabs>
@@ -109,7 +187,7 @@
 </template>
 
 <script>
-import { mapMutations, mapGetters } from "vuex";
+import {mapMutations, mapGetters} from "vuex";
 
 export default {
   data() {
@@ -121,6 +199,7 @@ export default {
       },
       filteredTags: [],
       SharedUsersTags: [],
+      dropFiles: [],
     };
   },
   computed: {
@@ -139,14 +218,14 @@ export default {
       this.form.name = this.$store.state.stores.stores[storeIndex].name;
       this.form.description = this.$store.state.stores.stores[
         storeIndex
-      ].description;
+        ].description;
       this.form.location = this.$store.state.stores.stores[storeIndex].location;
 
       //////////////
       // SharedUser Tab
       this.SharedUsersTags = this.$store.state.stores.stores[
         storeIndex
-      ].sharedUsers;
+        ].sharedUsers;
       let ownerEmail = this.loggedInUser.email;
       this.SharedUsersTags = this.SharedUsersTags.filter(function (
         value,
@@ -217,6 +296,9 @@ export default {
       this.$store.dispatch("stores/createStore", this.form);
       this.form = [];
     },
+    deleteDropFile(index) {
+      this.dropFiles.splice(index, 1)
+    }
   },
 };
 </script>
@@ -226,6 +308,7 @@ export default {
 .modal {
   background-color: rgba(0, 0, 0, 0.1);
 }
+
 .autocomplete .dropdown-menu {
   min-width: 300px !important;
 }

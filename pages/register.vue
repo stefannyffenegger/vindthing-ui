@@ -1,4 +1,5 @@
 <template>
+<section>
   <section class="section">
     <div class="container">
       <div class="columns">
@@ -56,6 +57,17 @@
       </div>
     </div>
   </section>
+  <section class="section has-background-white-bis">
+    <div class="container">
+      <h2 class="subtitle has-text-primary">Getting Started</h2>
+      <b-steps size="is-medium">
+        <b-step-item label="Register" icon="account-plus"></b-step-item>
+        <b-step-item label="Confirm Email" icon="email-check"></b-step-item>
+        <b-step-item label="Login" icon="account-key"></b-step-item>
+      </b-steps>
+    </div>
+  </section>
+</section>
 </template>
 
 <script>

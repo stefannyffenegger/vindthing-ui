@@ -89,33 +89,35 @@
       </b-table-column>
 
       <b-table-column>
-        <b-collapse class="card" animation="slide" aria-id="contentIdForA11y3">
-          <div
+        <b-collapse :open="false" aria-id="contentIdForA11y1">
+          <button
+            class="button is-primary"
             slot="trigger"
-            slot-scope="props"
-            class="card-header"
-            role="button"
-            aria-controls="contentIdForA11y3">
-            <p class="card-header-title">
-              Component
-            </p>
-            <a class="card-header-icon">
-              <b-icon
-                :icon="props.open ? 'menu-down' : 'menu-up'">
-              </b-icon>
-            </a>
+            aria-controls="contentIdForA11y1">Comments
+          </button>
+          <div class="notification">
+            <b-message title="bob@bob 2020-11-26" aria-close-label="Close message">
+              Sorry, broke the toaster, will bring a new one tomorrow
+            </b-message>
+            <b-message title="bob@bob 2020-11-28" aria-close-label="Close message">
+              Took the green socks
+            </b-message>
           </div>
-          <div class="card-content">
-            <div class="content">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
-              <a>#buefy</a>.
-            </div>
-          </div>
-          <footer class="card-footer">
-            <a class="card-footer-item">Save</a>
-            <a class="card-footer-item">Delete</a>
-          </footer>
         </b-collapse>
+      </b-table-column>
+
+      <b-table-column label="Comments" v-slot="props">
+        <b-icon
+          icon="chevron-left"
+          @click="commentSlider()"
+        >
+        </b-icon>
+        {{ commentSlider(props.index, 0) }}
+        <b-icon
+          icon="chevron-right"
+          @click="commentSlider()"
+        >
+        </b-icon>
       </b-table-column>
 
       <b-table-column v-slot="props">
@@ -184,7 +186,9 @@ export default {
       isComponentModalStoreActive: false,
       isComponentModalItemActive: false,
       isComponentModalViewItemsActive: false,
-      isCardLayout: false
+      isCardLayout: false,
+      test: ["test1", "test2", "test3"],
+      slider: []
     };
   },
 
@@ -214,9 +218,12 @@ export default {
         onConfirm: () => this.deleteStore(id)
       })
     },
-    itemTooltip(){
-      $store.state.stores.stores[props.index].items;
-      return "TEST";
+    itemTooltip() {
+      return this.$store.state.stores.stores[props.index].items;
+    },
+    commentSlider(storeIndex, commentindex) {
+      this.slider[storeIndex] = 0
+      return this.$store.state.stores.stores[storeIndex].comments[commentindex];
     },
     openModalItemCreate(storeId) {
       this.$store.dispatch("stores/setFocusedStoreId", storeId);
