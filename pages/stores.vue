@@ -226,8 +226,8 @@ export default {
       this.$store.dispatch("stores/setFocusedStoreId", storeId);
       this.isComponentModalStoreActive = true
     },
-    openModalViewtems(storeId) {
-      this.$store.dispatch("stores/setFocusedStoreId", storeId);
+    async openModalViewtems(storeId) {
+      await this.$store.dispatch("stores/setFocusedStoreId", storeId);
       this.isComponentModalViewItemsActive = true
     },
     itemTooltip() {
@@ -240,6 +240,10 @@ export default {
   },
   mounted() {
     this.$store.dispatch("stores/getStores");
+    if (this.$route.query.id) {
+      this.openModalViewtems(this.$route.query.id)
+      }
+    
   }
 };
 </script>
