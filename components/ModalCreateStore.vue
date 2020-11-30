@@ -110,7 +110,7 @@
                 </b-taginput>
               </b-field>
 
-              <br />
+              <br/>
 
               <b-field label="New Owner">
                 <b-autocomplete
@@ -133,10 +133,10 @@
           <div class="columns">
             <div class="control column">
               <button
-              @click.prevent="$parent.close()"
-              class="button is-dark is-fullwidth"
+                @click.prevent="$parent.close()"
+                class="button is-dark is-fullwidth"
               >
-              Close
+                Close
               </button>
             </div>
             <div class="control column">
@@ -214,15 +214,16 @@
           <h2 class="subtitle">VindThing</h2>
           <p>Store Name: {{ form.name }}</p>
           <p>Store ID: {{ this.getFocusedStoreId }}</p>
-          <br />
+          <br/>
           <qrcode-vue
             id="qrcode"
-            :value="this.getFocusedStoreId"
+            :value="'http://localhost:3000/stores?id='+this.getFocusedStoreId"
             size="400"
             level="H"
           ></qrcode-vue>
-          <button @click="printElem()" class="button is-dark is-fullwidth">
-            Print
+          <br>
+          <button @click="printElem()" class="button is-dark is-half">
+            <b-icon icon="printer"></b-icon><a class="has-text-white">Print</a>
           </button>
         </b-tab-item>
       </b-tabs>
@@ -265,14 +266,14 @@ export default {
       this.form.name = this.$store.state.stores.stores[storeIndex].name;
       this.form.description = this.$store.state.stores.stores[
         storeIndex
-      ].description;
+        ].description;
       this.form.location = this.$store.state.stores.stores[storeIndex].location;
 
       //////////////
       // SharedUser Tab
       this.SharedUsersTags = this.$store.state.stores.stores[
         storeIndex
-      ].sharedUsers;
+        ].sharedUsers;
       let ownerEmail = this.loggedInUser.email;
       this.SharedUsersTags = this.SharedUsersTags.filter(function (
         value,
@@ -357,13 +358,7 @@ export default {
     printElem() {
       var mywindow = window.open("", "PRINT", "height=400,width=600");
 
-      mywindow.document.write("<p>Halloo</p>");
-      mywindow.document.write(document.getElementById("qrcode").get(0));
-      mywindow.document.close(); // necessary for IE >= 10
-      mywindow.focus(); // necessary for IE >= 10*/
-
       mywindow.print();
-      //mywindow.close();
 
       return true;
     }
