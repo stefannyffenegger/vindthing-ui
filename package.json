@@ -20,6 +20,7 @@
     "nuxt-buefy": "^0.4.4",
     "qrcode.vue": "^1.7.0",
     "sass-loader": "^10.1.0",
-    "vue-chart.js": "^0.2.0"
+    "vue-chart.js": "^0.2.0",
+    "vue-chartjs": "^3.5.1"
   }
 }

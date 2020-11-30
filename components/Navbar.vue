@@ -14,7 +14,7 @@
         <nuxt-link to="/stores">Stores</nuxt-link>
       </b-navbar-item>
       <b-navbar-item>
-        <nuxt-link to="/statistics">Statistics</nuxt-link>
+        <nuxt-link to="/insights">Insights</nuxt-link>
       </b-navbar-item>
     </template>
 
