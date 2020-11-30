@@ -123,8 +123,8 @@
       <b-table-column v-slot="props">
         <div class="buttons has-addons level-right">
           <b-button type="is-primary" outlined @click="openModalStoreUpdate(props.row.id)">
-            <b-tooltip label="Edit Store" type="is-primary is-light">
-              <b-icon icon="pencil"></b-icon>
+            <b-tooltip label="View/Edit Store" type="is-primary is-light">
+              <b-icon icon="file-eye"></b-icon>
             </b-tooltip>
           </b-button>
           <b-button type="is-primary" outlined @click="openModalItemCreate(props.row.id)">
