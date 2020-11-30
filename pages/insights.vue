@@ -4,7 +4,7 @@
     <hr/>
     <b-tabs>
       <b-tab-item label="Item Usage">
-        <pie-chart :data="$store.state.stores.stores[0].items.useCount" :options="barChartOptions" :height="200"/>
+        <pie-chart :data="pieChartData" :options="barChartOptions" :height="200"/>
       </b-tab-item>
       <b-tab-item label="Something else">
         <bar-chart :data="barChartData" :options="barChartOptions" :height="200"/>
@@ -88,6 +88,16 @@ export default {
             }
           ]
         }
+      },
+      pieChartData: {
+        labels: [],
+        datasets: [
+          {
+            label: 'Uses',
+            data: [10, 15, 20, 30, 40, 50, 60, 70, 34, 45, 11, 78, 45],
+            backgroundColor: '#ff9305'
+          }
+        ]
       }
     }
   },
@@ -99,8 +109,16 @@ export default {
       getFocusedStoreId: "stores/getFocusedStoreId",
     }),
     getItems() {
-      const index = this.$store.state.stores.stores.findIndex(store => store.id === this.getFocusedStoreId);
-      return this.$store.state.stores.stores[index].items
+      const index = this.$store.state.stores.stores.findIndex(
+        (store) => store.id === this.getFocusedStoreId
+      );
+      return this.$store.state.stores.stores[index].items;
+    },
+    getStore() {
+      let index = this.$store.state.stores.stores.findIndex(
+        (store) => store.id === this.getFocusedStoreId
+      );
+      return this.$store.state.stores.stores[index];
     }
   },
   methods: {
