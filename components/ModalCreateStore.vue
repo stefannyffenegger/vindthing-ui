@@ -130,15 +130,13 @@
             </div>
           </div>
 
-          <!-- field="name" v-model="searchSpecificUser" :data="getFilteredTags" -->
-
           <div class="columns">
             <div class="control column">
               <button
-                @click.prevent="$parent.close()"
-                class="button is-dark is-fullwidth"
+              @click.prevent="$parent.close()"
+              class="button is-dark is-fullwidth"
               >
-                Close
+              Close
               </button>
             </div>
             <div class="control column">
@@ -179,11 +177,16 @@
 
         <b-tab-item label="Picture" v-if="this.getFocusedStoreId">
           <b-field>
-            <b-upload v-model="dropFiles" multiple drag-drop>
+            <b-upload v-model="dropFiles"
+                      multiple
+                      drag-drop>
               <section class="section">
                 <div class="content has-text-centered">
                   <p>
-                    <b-icon icon="upload" size="is-large"> </b-icon>
+                    <b-icon
+                      icon="upload"
+                      size="is-large">
+                    </b-icon>
                   </p>
                   <p>Drop your files here or click to upload</p>
                 </div>
@@ -228,8 +231,8 @@
 </template>
 
 <script>
-import { mapMutations, mapGetters } from "vuex";
-import QrcodeVue from "qrcode.vue";
+import {mapMutations, mapGetters} from "vuex";
+import QrcodeVue from 'qrcode.vue';
 
 export default {
   data() {
@@ -365,11 +368,11 @@ export default {
       //mywindow.close();
 
       return true;
-    },
+    }
   },
   components: {
     QrcodeVue,
-  },
+  }
 };
 </script>
 

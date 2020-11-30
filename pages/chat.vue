@@ -1,6 +1,7 @@
 <template>
   <div class="section">
     <h2 class="title">Chat</h2>
+    <hr>
 
     <div class="columns">
       <div id="available-users"></div>
