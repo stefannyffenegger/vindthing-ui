@@ -133,7 +133,7 @@
             </b-tooltip>
           </b-button>
           <b-button type="is-primary" outlined @click="openModalViewtems(props.row.id)">
-            <b-tooltip label="Open Store" type="is-primary is-light">
+            <b-tooltip label="View Items" type="is-primary is-light">
               <b-icon icon="eye"></b-icon>
             </b-tooltip>
           </b-button>
@@ -204,8 +204,8 @@ export default {
     }
   },
   methods: {
-    async deleteStore(store_id) {
-      this.$store.dispatch("stores/deleteStore", store_id);
+    async deleteStore(storeId) {
+      this.$store.dispatch("stores/deleteStore", storeId);
       this.$buefy.toast.open('Store deleted!')
     },
     confirmDelete(name, id) {
@@ -218,13 +218,6 @@ export default {
         onConfirm: () => this.deleteStore(id)
       })
     },
-    itemTooltip() {
-      return this.$store.state.stores.stores[props.index].items;
-    },
-    commentSlider(storeIndex, commentindex) {
-      this.slider[storeIndex] = 0
-      return this.$store.state.stores.stores[storeIndex].comments[commentindex];
-    },
     openModalItemCreate(storeId) {
       this.$store.dispatch("stores/setFocusedStoreId", storeId);
       this.isComponentModalItemActive = true
@@ -236,9 +229,15 @@ export default {
     openModalViewtems(storeId) {
       this.$store.dispatch("stores/setFocusedStoreId", storeId);
       this.isComponentModalViewItemsActive = true
+    },
+    itemTooltip() {
+      return this.$store.state.stores.stores[props.index].items;
+    },
+    commentSlider(storeIndex, commentindex) {
+      this.slider[storeIndex] = 0
+      return this.test[commentindex];//this.$store.state.stores.stores[storeIndex].comments[commentindex];
     }
   },
-
   mounted() {
     this.$store.dispatch("stores/getStores");
   }

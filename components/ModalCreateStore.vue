@@ -115,10 +115,10 @@
           <div class="columns">
             <div class="control column">
               <button
-                @click.prevent="$parent.close()"
-                class="button is-dark is-fullwidth"
+              @click.prevent="$parent.close()"
+              class="button is-dark is-fullwidth"
               >
-                Close
+              Close
               </button>
             </div>
             <div class="control column">
@@ -181,6 +181,20 @@
             </span>
           </div>
         </b-tab-item>
+
+        <b-tab-item label="QR Code" v-if="this.getFocusedStoreId">
+          <h2 class="subtitle">VindThing</h2>
+          <p>Store Name: {{ form.name }}</p>
+          <p>Store ID: {{ this.getFocusedStoreId }}</p>
+          <br>
+          <qrcode-vue id="qrcode" :value="this.getFocusedStoreId" size="400" level="H"></qrcode-vue>
+          <button
+            @click="printElem()"
+            class="button is-dark is-fullwidth"
+          >
+            Print
+          </button>
+        </b-tab-item>
       </b-tabs>
     </div>
   </div>
@@ -188,6 +202,7 @@
 
 <script>
 import {mapMutations, mapGetters} from "vuex";
+import QrcodeVue from 'qrcode.vue';
 
 export default {
   data() {
@@ -298,8 +313,24 @@ export default {
     },
     deleteDropFile(index) {
       this.dropFiles.splice(index, 1)
+    },
+    printElem() {
+      var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+
+      mywindow.document.write('<p>Halloo</p>');
+      mywindow.document.write(document.getElementById("qrcode").get(0));
+      mywindow.document.close(); // necessary for IE >= 10
+      mywindow.focus(); // necessary for IE >= 10*/
+
+      mywindow.print();
+      //mywindow.close();
+
+      return true;
     }
   },
+  components: {
+    QrcodeVue,
+  }
 };
 </script>
 
