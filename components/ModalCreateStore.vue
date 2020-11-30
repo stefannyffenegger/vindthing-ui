@@ -330,13 +330,11 @@ export default {
         (store) => store.id === this.getFocusedStoreId
       );
 
-      console.log("hey")
       if (this.checkOwner() && this.$store.state.stores.stores[storeIndex].owner !== this.selectedSpecificUser && this.selectedSpecificUser !== "") {
         SharedUserPayload = [];
         SharedUserPayload.storeId = this.getFocusedStoreId;
         SharedUserPayload.ownerEmail = this.selectedSpecificUser
         this.$store.dispatch("stores/updateSharedUsers", SharedUserPayload);
-        this.mounted()
       }
 
     },
