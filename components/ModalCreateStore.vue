@@ -115,7 +115,7 @@
               <b-field label="New Owner">
                 <b-autocomplete
                   placeholder="e.g. alex@stark-industry.com"
-                  v-model="storeOwner"
+                  v-model="selectedSpecificUser"
                   open-on-focus
                   :disabled="checkOwner() ? false : true"
                   :data="filteredTags"
@@ -246,8 +246,7 @@ export default {
       SharedUsersTags: [],
       dropFiles: [],
       searchSpecificUser: [],
-      selectedSpecificUser: null,
-      storeOwner: ""
+      selectedSpecificUser: ""
     };
   },
   computed: {
@@ -282,7 +281,7 @@ export default {
       ) {
         return value !== ownerEmail;
       });
-      this.storeOwner = this.$store.state.stores.stores[storeIndex].owner
+      this.selectedSpecificUser = this.$store.state.stores.stores[storeIndex].owner
     }
   },
   destroyed() {
@@ -315,7 +314,7 @@ export default {
       );
 
       return (
-        this.$store.state.stores.stores[storeIndex].owner ==
+        this.$store.state.stores.stores[storeIndex].owner ===
         this.loggedInUser.email
       );
     },
@@ -331,7 +330,8 @@ export default {
         (store) => store.id === this.getFocusedStoreId
       );
 
-      if (this.checkOwner() && this.$store.state.stores.stores[storeIndex].owner !== this.selectedSpecificUser && this.selectedSpecificUser !== null) {
+      console.log("hey")
+      if (this.checkOwner() && this.$store.state.stores.stores[storeIndex].owner !== this.selectedSpecificUser && this.selectedSpecificUser !== "") {
         SharedUserPayload = [];
         SharedUserPayload.storeId = this.getFocusedStoreId;
         SharedUserPayload.ownerEmail = this.selectedSpecificUser
