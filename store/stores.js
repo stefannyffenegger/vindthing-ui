@@ -104,7 +104,8 @@ export const actions = {
     async updateSharedUsers({ commit }, payloadSharedUsers) {
         let res = await this.$axios.post("/api/store/user/update", {
             sharedUsers: payloadSharedUsers.sharedUsers,
-            storeId: payloadSharedUsers.storeId
+            storeId: payloadSharedUsers.storeId,
+            owner: payloadSharedUsers.ownerEmail
         });
 
         commit('UPDATE_STORE', res.data)

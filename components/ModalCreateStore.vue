@@ -109,16 +109,36 @@
                 >
                 </b-taginput>
               </b-field>
+
+              <br />
+
+              <b-field label="New Owner">
+                <b-autocomplete
+                  placeholder="e.g. alex@stark-industry.com"
+                  v-model="storeOwner"
+                  open-on-focus
+                  :disabled="checkOwner() ? false : true"
+                  :data="filteredTags"
+                  @typing="getFilteredTags"
+                  @select="(option) => (selectedSpecificUser = option)"
+                  clearable
+                  max-width="300px"
+                  append-to-body
+                >
+                </b-autocomplete>
+              </b-field>
             </div>
           </div>
+
+          <!-- field="name" v-model="searchSpecificUser" :data="getFilteredTags" -->
 
           <div class="columns">
             <div class="control column">
               <button
-              @click.prevent="$parent.close()"
-              class="button is-dark is-fullwidth"
+                @click.prevent="$parent.close()"
+                class="button is-dark is-fullwidth"
               >
-              Close
+                Close
               </button>
             </div>
             <div class="control column">
@@ -126,13 +146,14 @@
                 type="submit"
                 v-show="checkOwner()"
                 class="button is-dark is-fullwidth"
-                @click="updateSharedUsers();
-                $parent.close();
-                $buefy.toast.open({
-                  message: 'Store permissions updated!',
-                  type: 'is-success',
-                  duration: 5000,
-                });
+                @click="
+                  updateSharedUsers();
+                  $parent.close();
+                  $buefy.toast.open({
+                    message: 'Store permissions updated!',
+                    type: 'is-success',
+                    duration: 5000,
+                  });
                 "
               >
                 Update Permissions
@@ -142,26 +163,27 @@
         </b-tab-item>
 
         <b-tab-item label="Comment" v-if="this.getFocusedStoreId">
-          <b-message title="bob@bob 2020-11-26" aria-close-label="Close message">
+          <b-message
+            title="bob@bob 2020-11-26"
+            aria-close-label="Close message"
+          >
             Sorry, broke the toaster, will bring a new one tomorrow
           </b-message>
-          <b-message title="bob@bob 2020-11-28" aria-close-label="Close message">
+          <b-message
+            title="bob@bob 2020-11-28"
+            aria-close-label="Close message"
+          >
             Took the green socks
           </b-message>
         </b-tab-item>
 
         <b-tab-item label="Picture" v-if="this.getFocusedStoreId">
           <b-field>
-            <b-upload v-model="dropFiles"
-                      multiple
-                      drag-drop>
+            <b-upload v-model="dropFiles" multiple drag-drop>
               <section class="section">
                 <div class="content has-text-centered">
                   <p>
-                    <b-icon
-                      icon="upload"
-                      size="is-large">
-                    </b-icon>
+                    <b-icon icon="upload" size="is-large"> </b-icon>
                   </p>
                   <p>Drop your files here or click to upload</p>
                 </div>
@@ -170,14 +192,17 @@
           </b-field>
 
           <div class="tags">
-            <span v-for="(file, index) in dropFiles"
-                  :key="index"
-                  class="tag is-primary">
-                {{ file.name }}
-                <button class="delete is-small"
-                        type="button"
-                        @click="deleteDropFile(index)">
-                </button>
+            <span
+              v-for="(file, index) in dropFiles"
+              :key="index"
+              class="tag is-primary"
+            >
+              {{ file.name }}
+              <button
+                class="delete is-small"
+                type="button"
+                @click="deleteDropFile(index)"
+              ></button>
             </span>
           </div>
         </b-tab-item>
@@ -186,12 +211,14 @@
           <h2 class="subtitle">VindThing</h2>
           <p>Store Name: {{ form.name }}</p>
           <p>Store ID: {{ this.getFocusedStoreId }}</p>
-          <br>
-          <qrcode-vue id="qrcode" :value="this.getFocusedStoreId" size="400" level="H"></qrcode-vue>
-          <button
-            @click="printElem()"
-            class="button is-dark is-fullwidth"
-          >
+          <br />
+          <qrcode-vue
+            id="qrcode"
+            :value="this.getFocusedStoreId"
+            size="400"
+            level="H"
+          ></qrcode-vue>
+          <button @click="printElem()" class="button is-dark is-fullwidth">
             Print
           </button>
         </b-tab-item>
@@ -201,8 +228,8 @@
 </template>
 
 <script>
-import {mapMutations, mapGetters} from "vuex";
-import QrcodeVue from 'qrcode.vue';
+import { mapMutations, mapGetters } from "vuex";
+import QrcodeVue from "qrcode.vue";
 
 export default {
   data() {
@@ -215,6 +242,9 @@ export default {
       filteredTags: [],
       SharedUsersTags: [],
       dropFiles: [],
+      searchSpecificUser: [],
+      selectedSpecificUser: null,
+      storeOwner: ""
     };
   },
   computed: {
@@ -233,14 +263,14 @@ export default {
       this.form.name = this.$store.state.stores.stores[storeIndex].name;
       this.form.description = this.$store.state.stores.stores[
         storeIndex
-        ].description;
+      ].description;
       this.form.location = this.$store.state.stores.stores[storeIndex].location;
 
       //////////////
       // SharedUser Tab
       this.SharedUsersTags = this.$store.state.stores.stores[
         storeIndex
-        ].sharedUsers;
+      ].sharedUsers;
       let ownerEmail = this.loggedInUser.email;
       this.SharedUsersTags = this.SharedUsersTags.filter(function (
         value,
@@ -249,6 +279,7 @@ export default {
       ) {
         return value !== ownerEmail;
       });
+      this.storeOwner = this.$store.state.stores.stores[storeIndex].owner
     }
   },
   destroyed() {
@@ -265,15 +296,14 @@ export default {
         })
         .flat();
 
-      const userMailsFiltered = [...new Set(userMails)];
+      let userMailsFiltered = [...new Set(userMails)];
 
       console.log(userMailsFiltered)
 
       this.filteredTags = userMailsFiltered.filter((option) => {
-        return (
-          option.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0
-        );
+        return option.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0 && option.toString() !== this.loggedInUser.email;
       });
+      console.log(this.filteredTags)
     },
 
     checkOwner() {
@@ -288,15 +318,24 @@ export default {
     },
 
     async updateSharedUsers() {
-      if (this.SharedUsersTags == null) {
-        return;
-      }
 
       let SharedUserPayload = [];
       SharedUserPayload.sharedUsers = this.SharedUsersTags;
       SharedUserPayload.storeId = this.getFocusedStoreId;
+      await this.$store.dispatch("stores/updateSharedUsers", SharedUserPayload);
 
-      this.$store.dispatch("stores/updateSharedUsers", SharedUserPayload);
+      const storeIndex = this.$store.state.stores.stores.findIndex(
+        (store) => store.id === this.getFocusedStoreId
+      );
+
+      if (this.checkOwner() && this.$store.state.stores.stores[storeIndex].owner !== this.selectedSpecificUser && this.selectedSpecificUser !== null) {
+        SharedUserPayload = [];
+        SharedUserPayload.storeId = this.getFocusedStoreId;
+        SharedUserPayload.ownerEmail = this.selectedSpecificUser
+        this.$store.dispatch("stores/updateSharedUsers", SharedUserPayload);
+        this.mounted()
+      }
+
     },
 
     async createStore() {
@@ -312,12 +351,12 @@ export default {
       this.form = [];
     },
     deleteDropFile(index) {
-      this.dropFiles.splice(index, 1)
+      this.dropFiles.splice(index, 1);
     },
     printElem() {
-      var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+      var mywindow = window.open("", "PRINT", "height=400,width=600");
 
-      mywindow.document.write('<p>Halloo</p>');
+      mywindow.document.write("<p>Halloo</p>");
       mywindow.document.write(document.getElementById("qrcode").get(0));
       mywindow.document.close(); // necessary for IE >= 10
       mywindow.focus(); // necessary for IE >= 10*/
@@ -326,11 +365,11 @@ export default {
       //mywindow.close();
 
       return true;
-    }
+    },
   },
   components: {
     QrcodeVue,
-  }
+  },
 };
 </script>
 
