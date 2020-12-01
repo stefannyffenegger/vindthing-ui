@@ -24,10 +24,7 @@
     <section class="section has-background-white-bis">
       <div class="container">
         <h2 class="subtitle has-text-primary">How it Works</h2>
-        <b-steps
-          size="is-medium"
-
-        >
+        <b-steps size="is-medium">
           <b-step-item
             label="Create a Store"
             step="1"

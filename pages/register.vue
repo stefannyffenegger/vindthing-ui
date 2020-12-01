@@ -61,9 +61,34 @@
     <div class="container">
       <h2 class="subtitle has-text-primary">Getting Started</h2>
       <b-steps size="is-medium">
-        <b-step-item label="Register" icon="account-plus"></b-step-item>
-        <b-step-item label="Confirm Email" icon="email-check"></b-step-item>
-        <b-step-item label="Login" icon="account-key"></b-step-item>
+        <b-step-item
+          label="Register"
+          icon="account-plus"
+          :clickable=true
+        >
+          <hr>
+          <h2 class="subtitle">Register</h2>
+          <p>Register an account with the form on this page</p>
+        </b-step-item>
+        <b-step-item
+          label="Confirm Email"
+          icon="email-check"
+          :clickable=true
+        >
+          <hr>
+          <h2 class="subtitle">Confirm Email</h2>
+          <p>You will get an email with a link to confirm your account</p>
+          <p>As soon as you confirm your account, it gets unlocked</p>
+        </b-step-item>
+        <b-step-item
+          label="Login"
+          icon="account-key"
+          :clickable=true
+        >
+          <hr>
+          <h2 class="subtitle">Login</h2>
+          <p>Welcome to Vindthing! now you can <nuxt-link to="/login">Login</nuxt-link> with your credentials</p>
+        </b-step-item>
       </b-steps>
     </div>
   </section>
