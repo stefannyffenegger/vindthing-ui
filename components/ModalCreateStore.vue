@@ -228,9 +228,8 @@
               </span>
             </b-upload>
           </b-field>
-
-          {{  }}
-                  <b-image
+          <b-image
+            v-if="!!getStore.imageId"
             :src="'http://localhost:8080/api/image/download/' + getStore.imageId + '/' + this.$auth.getToken('local').slice(6)"
             :alt="getStore.imageId"
             responsive

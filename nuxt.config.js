@@ -18,6 +18,14 @@ export default {
       {
         src: "https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js",
         type: "text/javascript"
+      },
+      {
+        src: "https://cdn.jsdelivr.net/npm/sockjs-client@1.5.0/dist/sockjs.min.js",
+        type: "text/javascript"
+      },
+      {
+        src: "https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js",
+        type: "text/javascript"
       }
     ]
   },
