@@ -88,24 +88,6 @@
         {{ props.row.location }}
       </b-table-column>
 
-      <b-table-column>
-        <b-collapse :open="false" aria-id="contentIdForA11y1">
-          <button
-            class="button is-primary"
-            slot="trigger"
-            aria-controls="contentIdForA11y1">Comments
-          </button>
-          <div class="notification">
-            <b-message title="bob@bob 2020-11-26" aria-close-label="Close message">
-              Sorry, broke the toaster, will bring a new one tomorrow
-            </b-message>
-            <b-message title="bob@bob 2020-11-28" aria-close-label="Close message">
-              Took the green socks
-            </b-message>
-          </div>
-        </b-collapse>
-      </b-table-column>
-
       <b-table-column label="Comments" v-slot="props">
         <b-icon
           icon="chevron-left"
@@ -243,7 +225,7 @@ export default {
     if (this.$route.query.id) {
       this.openModalViewtems(this.$route.query.id)
       }
-    
+
   }
 };
 </script>

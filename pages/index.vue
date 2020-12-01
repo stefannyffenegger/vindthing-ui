@@ -26,12 +26,15 @@
         <h2 class="subtitle has-text-primary">How it Works</h2>
         <b-steps
           size="is-medium"
+
         >
           <b-step-item
             label="Create a Store"
             step="1"
             icon="plus"
+            :clickable=true
           >
+            <hr>
             <h2 class="subtitle">Create a Store</h2>
             <p>In 3 easy steps:</p>
             <div class="content">
@@ -48,12 +51,41 @@
             label="Add Items"
             step="2"
             icon="plus-box-multiple"
-          ></b-step-item>
+            :clickable=true
+          >
+            <hr>
+            <h2 class="subtitle">Add Items</h2>
+            <p>Now let's add some Items to our Store</p>
+            <div class="content">
+              <ul>
+                <li>Click the "Add Item" <b-icon icon="plus"></b-icon> button</li>
+                <li>Fill out the form and send</li>
+                <li>That's it 😎</li>
+              </ul>
+            </div>
+            <p>To find your saved Item, just click "View Items" <b-icon icon="eye"></b-icon> in the <nuxt-link to="/stores">Store</nuxt-link> overview</p>
+            <br>
+            <img src="images/howto-step-2.png" alt="howto-step-2">
+          </b-step-item>
           <b-step-item
             label="Share with others"
             step="3"
             icon="share-variant"
-          ></b-step-item>
+            :clickable=true
+          >
+            <hr>
+            <h2 class="subtitle">Share with other Users</h2>
+            <p>Your Store belongs to a club? Or just want to share your Stores with friends and relatives? We got this covered 😃</p>
+            <div class="content">
+              <ul>
+                <li>Click the "View/Edit Store" <b-icon icon="file-eye"></b-icon> button</li>, this is also where you can view and update your Stores
+                <li>Go to the "Share" tab and add users to share</li>
+                <li>Here we go 👍</li>
+              </ul>
+            </div>
+            <br>
+            <img src="images/howto-step-3.png" alt="howto-step-3">
+          </b-step-item>
         </b-steps>
       </div>
     </section>
