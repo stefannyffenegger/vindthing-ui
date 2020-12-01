@@ -39,6 +39,12 @@ export const mutations = {
 
         if (storeIndex >= 0 && itemIndex >= 0) {state.stores[storeIndex].items.splice(itemIndex, 1);}
     },
+    REMOVE_COMMENT(state, commentPayload) {
+        const storeIndex = state.stores.findIndex(store => store.id === commentPayload.storeId );
+        const commentIndex = state.stores[storeIndex].comments.findIndex(commentsInStore => commentsInStore.id === commentPayload.commentId );
+
+        if (storeIndex >= 0 && commentIndex >= 0) {state.stores[storeIndex].comments.splice(commentIndex, 1);}
+    },
     UPDATE_ITEM(state, item) {
         const storeIndex = state.stores.findIndex(store => store.id === item.storeId );
         const itemIndex = state.stores[storeIndex].items.findIndex(itemInStore => itemInStore.id === item.id );
@@ -46,6 +52,10 @@ export const mutations = {
         if (storeIndex >= 0 && itemIndex >= 0) {
             state.stores[storeIndex].items.splice(itemIndex, 1, item);
         }
+    },
+    UPDATE_IMAGE_STORE(state, object) {
+        const storeIndex = state.stores.findIndex(store => store.id === object.storeId );
+        state.stores[storeIndex].imageId = object.imageId;
     },
     MOVE_ITEM(state, item) {
         var storeIndex = state.stores.findIndex(store => store.id === item.newStoreId );
@@ -101,6 +111,16 @@ export const actions = {
         // Anschauen
         commit('REMOVE_STORE', store_id)
     },
+    async uploadFile({ commit }, formData) {
+        let res = await this.$axios.post("/api/image/upload", formData, {
+            "Content-Type": "multipart/form-data"
+        });
+
+        console.log(formData.get("objectId"))
+        res.data.storeId = formData.get("objectId");
+
+        commit('UPDATE_IMAGE_STORE', res.data)
+    },
     async updateSharedUsers({ commit }, payloadSharedUsers) {
         let res = await this.$axios.post("/api/store/user/update", {
             sharedUsers: payloadSharedUsers.sharedUsers,
@@ -122,6 +142,21 @@ export const actions = {
         res.data.storeId = form.storeId
 
         commit('ADD_ITEM', res.data)
+    },
+    async createComment({ commit }, commentPayload) {
+        let res = await this.$axios.post("/api/store/comment/add", {
+            message: commentPayload.comment,
+            storeId: commentPayload.storeId,
+        });
+
+        commit('UPDATE_STORE', res.data)
+    },
+    async deleteComment({ commit }, commentPayload) {
+        let res = await this.$axios.post("/api/store/comment/remove", {
+            id: commentPayload.commentId
+        });
+
+        commit('REMOVE_COMMENT', commentPayload)
     },
     async deleteItem({ commit }, item) {
 

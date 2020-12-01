@@ -88,37 +88,19 @@
         {{ props.row.location }}
       </b-table-column>
 
-      <b-table-column>
-        <b-collapse :open="false" aria-id="contentIdForA11y1">
-          <button
-            class="button is-primary"
-            slot="trigger"
-            aria-controls="contentIdForA11y1">Comments
-          </button>
-          <div class="notification">
-            <b-message title="bob@bob 2020-11-26" aria-close-label="Close message">
-              Sorry, broke the toaster, will bring a new one tomorrow
-            </b-message>
-            <b-message title="bob@bob 2020-11-28" aria-close-label="Close message">
-              Took the green socks
-            </b-message>
-          </div>
-        </b-collapse>
-      </b-table-column>
-
-      <b-table-column label="Comments" v-slot="props">
+<!--       <b-table-column label="Comments" v-slot="props">
         <b-icon
           icon="chevron-left"
-          @click="commentSlider()"
+          @click.native="if (sliderIndex > 0) {sliderIndex--}"
         >
         </b-icon>
-        {{ commentSlider(props.index, 0) }}
+        {{ getComment(props.row.id) }}
         <b-icon
           icon="chevron-right"
-          @click="commentSlider()"
+          @click.native="if (sliderIndex < props.row.comments.length) {sliderIndex++};"
         >
         </b-icon>
-      </b-table-column>
+      </b-table-column> -->
 
       <b-table-column v-slot="props">
         <div class="buttons has-addons level-right">
@@ -188,7 +170,7 @@ export default {
       isComponentModalViewItemsActive: false,
       isCardLayout: false,
       test: ["test1", "test2", "test3"],
-      slider: []
+      sliderIndex: 0
     };
   },
 
@@ -218,6 +200,11 @@ export default {
         onConfirm: () => this.deleteStore(id)
       })
     },
+    getComment(storeId) {
+      const index = this.$store.state.stores.stores.findIndex(store => store.id === storeId);
+      console.log(storeId)
+      if (this.sliderIndex !== null) return this.$store.state.stores.stores[index].comments[this.sliderIndex].comment
+    },
     openModalItemCreate(storeId) {
       this.$store.dispatch("stores/setFocusedStoreId", storeId);
       this.isComponentModalItemActive = true
@@ -233,10 +220,6 @@ export default {
     itemTooltip() {
       return this.$store.state.stores.stores[props.index].items;
     },
-    commentSlider(storeIndex, commentindex) {
-      this.slider[storeIndex] = 0
-      return this.test[commentindex];//this.$store.state.stores.stores[storeIndex].comments[commentindex];
-    }
   },
   mounted() {
     this.$store.dispatch("stores/getStores");

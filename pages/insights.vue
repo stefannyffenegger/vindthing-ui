@@ -19,6 +19,8 @@ import {mapMutations, mapGetters} from "vuex";
 export default {
   data() {
     return {
+      labelsPieChart: [],
+      dataPieChart: [],
       isCardLayout: false,
       test: ["test1", "test2", "test3"],
       slider: [],
@@ -58,7 +60,7 @@ export default {
       barChartOptions: {
         responsive: true,
         legend: {
-          display: true
+          display: false
         },
         title: {
           display: true,
@@ -101,19 +103,16 @@ export default {
       }
     }
   },
-
+  mounted() {
+    this.$store.dispatch("stores/getStores");
+    this.$store.dispatch("stores/setFocusedStoreId", "5fc28cfac354b846a87963d8");
+  },
   middleware: "auth",
   computed: {
     ...mapGetters({
       getAllStores: "stores/getStores",
       getFocusedStoreId: "stores/getFocusedStoreId",
     }),
-    getItems() {
-      const index = this.$store.state.stores.stores.findIndex(
-        (store) => store.id === this.getFocusedStoreId
-      );
-      return this.$store.state.stores.stores[index].items;
-    },
     getStore() {
       let index = this.$store.state.stores.stores.findIndex(
         (store) => store.id === this.getFocusedStoreId
@@ -130,27 +129,25 @@ export default {
         options: chartData.options,
       });
     },
-    fillData() {
-      this.datacollection = {
-        labels: [this.getRandomInt(), this.getRandomInt()],
-        datasets: [
-          {
-            label: 'Data One',
-            backgroundColor: '#f87979',
-            data: [this.getRandomInt(), this.getRandomInt()]
-          }, {
-            label: 'Data One',
-            backgroundColor: '#f87979',
-            data: [this.getRandomInt(), this.getRandomInt()]
-          }
-        ]
-      }
+    async getItems() {
+      
+      const index = this.$store.state.stores.stores.findIndex(
+        (store) => store.id === this.getFocusedStoreId
+      );
+      console.log(this.$store.state.stores.stores)
+      return this.$store.state.stores.stores[index].items;
     },
-    getRandomInt() {
-      return Math.floor(Math.random() * (50 - 5 + 1)) + 5
+    async getUseCount() {
+      
+      let manipulate = this.getItems()
+      
+      let useCounts = manipulate.map(item => ({name: item.name, useCount: item.useCount})
+        )
+        .flat();
+        console.log(useCounts)
+
     }
   },
-  mounted() {
-  }
+
 }
 </script>

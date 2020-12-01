@@ -110,7 +110,7 @@
                 </b-taginput>
               </b-field>
 
-              <br/>
+              <br />
 
               <b-field label="New Owner">
                 <b-autocomplete
@@ -162,66 +162,95 @@
 
         <b-tab-item label="Comment" v-if="this.getFocusedStoreId">
           <b-message
-            title="bob@bob 2020-11-26"
+            v-for="(comment, index) in getStore.comments"
+            v-bind:key="index"
+            @close="deleteComment(comment.id)"
+            :title="comment.user + ' | ' + comment.created"
             aria-close-label="Close message"
           >
-            Sorry, broke the toaster, will bring a new one tomorrow
+            {{ comment.comment }}
           </b-message>
-          <b-message
-            title="bob@bob 2020-11-28"
-            aria-close-label="Close message"
-          >
-            Took the green socks
-          </b-message>
+
+          <form method="post" @submit.prevent="createComment">
+            <div class="field">
+              <label class="label">Comment</label>
+              <div class="control">
+                <input
+                  type="text"
+                  class="input"
+                  name="comment"
+                  v-model="commentToSend"
+                  required
+                />
+              </div>
+            </div>
+            <div class="columns">
+              <div class="control column">
+                <button
+                  @click.prevent="$parent.close()"
+                  class="button is-dark is-fullwidth"
+                >
+                  Close
+                </button>
+              </div>
+              <div class="control column">
+                <button
+                  type="submit"
+                  class="button is-dark is-fullwidth"
+                  @click="
+                    $buefy.toast.open({
+                      message: 'New Comment created!',
+                      type: 'is-success',
+                      duration: 5000,
+                    })
+                  "
+                >
+                  Send Comment
+                </button>
+              </div>
+            </div>
+          </form>
         </b-tab-item>
 
         <b-tab-item label="Picture" v-if="this.getFocusedStoreId">
-          <b-field>
-            <b-upload v-model="dropFiles"
-                      multiple
-                      drag-drop>
-              <section class="section">
-                <div class="content has-text-centered">
-                  <p>
-                    <b-icon
-                      icon="upload"
-                      size="is-large">
-                    </b-icon>
-                  </p>
-                  <p>Drop your files here or click to upload</p>
-                </div>
-              </section>
+          <b-field class="file is-primary" :class="{ 'has-name': !!file }">
+            <b-upload
+              @input="uploadFile('store')"
+              v-model="file"
+              class="file-label"
+            >
+              <span class="file-cta">
+                <b-icon class="file-icon" icon="upload"></b-icon>
+                <span class="file-label">Click to upload</span>
+              </span>
+              <span class="file-name" v-if="file">
+                {{ file.name }}
+              </span>
             </b-upload>
           </b-field>
 
-          <div class="tags">
-            <span
-              v-for="(file, index) in dropFiles"
-              :key="index"
-              class="tag is-primary"
-            >
-              {{ file.name }}
-              <button
-                class="delete is-small"
-                type="button"
-                @click="deleteDropFile(index)"
-              ></button>
-            </span>
-          </div>
+          {{  }}
+                  <b-image
+            :src="'http://localhost:8080/api/image/download/' + getStore.imageId + '/' + this.$auth.getToken('local').slice(6)"
+            :alt="getStore.imageId"
+            responsive
+            ratio="6by4"
+        ></b-image>
+
         </b-tab-item>
 
         <b-tab-item label="QR Code" v-if="this.getFocusedStoreId">
           <h2 class="subtitle">VindThing</h2>
           <p>Store Name: {{ form.name }}</p>
           <p>Store ID: {{ this.getFocusedStoreId }}</p>
-          <br/>
+          <br />
           <qrcode-vue
             id="qrcode"
-            :value="'http://localhost:3000/stores?id='+this.getFocusedStoreId"
+            :value="'http://localhost:3000/stores?id=' + this.getFocusedStoreId"
             size="400"
             level="H"
           ></qrcode-vue>
-          <br>
+          <br />
           <button @click="printElem()" class="button is-dark is-half">
             <b-icon icon="printer"></b-icon><a class="has-text-white">Print</a>
           </button>
@@ -232,8 +261,8 @@
 </template>
 
 <script>
-import {mapMutations, mapGetters} from "vuex";
-import QrcodeVue from 'qrcode.vue';
+import { mapMutations, mapGetters } from "vuex";
+import QrcodeVue from "qrcode.vue";
 
 export default {
   data() {
@@ -243,11 +272,12 @@ export default {
         description: "",
         location: "",
       },
+      commentToSend: "",
       filteredTags: [],
       SharedUsersTags: [],
-      dropFiles: [],
+      file: null,
       searchSpecificUser: [],
-      selectedSpecificUser: ""
+      selectedSpecificUser: "",
     };
   },
   computed: {
@@ -255,6 +285,12 @@ export default {
       getFocusedStoreId: "stores/getFocusedStoreId",
     }),
     ...mapGetters(["loggedInUser"]),
+    getStore() {
+      let index = this.$store.state.stores.stores.findIndex(
+        (store) => store.id === this.getFocusedStoreId
+      );
+      return this.$store.state.stores.stores[index];
+    },
   },
 
   mounted() {
@@ -266,14 +302,14 @@ export default {
       this.form.name = this.$store.state.stores.stores[storeIndex].name;
       this.form.description = this.$store.state.stores.stores[
         storeIndex
-        ].description;
+      ].description;
       this.form.location = this.$store.state.stores.stores[storeIndex].location;
 
       //////////////
       // SharedUser Tab
       this.SharedUsersTags = this.$store.state.stores.stores[
         storeIndex
-        ].sharedUsers;
+      ].sharedUsers;
       let ownerEmail = this.loggedInUser.email;
       this.SharedUsersTags = this.SharedUsersTags.filter(function (
         value,
@@ -282,7 +318,9 @@ export default {
       ) {
         return value !== ownerEmail;
       });
-      this.selectedSpecificUser = this.$store.state.stores.stores[storeIndex].owner
+      this.selectedSpecificUser = this.$store.state.stores.stores[
+        storeIndex
+      ].owner;
     }
   },
   destroyed() {
@@ -301,12 +339,15 @@ export default {
 
       let userMailsFiltered = [...new Set(userMails)];
 
-      console.log(userMailsFiltered)
+      console.log(userMailsFiltered);
 
       this.filteredTags = userMailsFiltered.filter((option) => {
-        return option.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0 && option.toString() !== this.loggedInUser.email;
+        return (
+          option.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0 &&
+          option.toString() !== this.loggedInUser.email
+        );
       });
-      console.log(this.filteredTags)
+      console.log(this.filteredTags);
     },
 
     checkOwner() {
@@ -321,7 +362,6 @@ export default {
     },
 
     async updateSharedUsers() {
-
       let SharedUserPayload = [];
       SharedUserPayload.sharedUsers = this.SharedUsersTags;
       SharedUserPayload.storeId = this.getFocusedStoreId;
@@ -331,15 +371,26 @@ export default {
         (store) => store.id === this.getFocusedStoreId
       );
 
-      if (this.checkOwner() && this.$store.state.stores.stores[storeIndex].owner !== this.selectedSpecificUser && this.selectedSpecificUser !== "") {
+      if (
+        this.checkOwner() &&
+        this.$store.state.stores.stores[storeIndex].owner !==
+          this.selectedSpecificUser &&
+        this.selectedSpecificUser !== ""
+      ) {
         SharedUserPayload = [];
         SharedUserPayload.storeId = this.getFocusedStoreId;
-        SharedUserPayload.ownerEmail = this.selectedSpecificUser
+        SharedUserPayload.ownerEmail = this.selectedSpecificUser;
         this.$store.dispatch("stores/updateSharedUsers", SharedUserPayload);
       }
-
     },
+    async uploadFile(type) {
+      let formData = new FormData();
+      formData.append("file", this.file);
+      formData.append("type", type);
+      formData.append("objectId", this.getFocusedStoreId);
 
+      this.$store.dispatch("stores/uploadFile", formData);
+    },
     async createStore() {
       if (this.getFocusedStoreId != null) {
         this.form.storeId = this.getFocusedStoreId;
@@ -352,8 +403,24 @@ export default {
       this.$store.dispatch("stores/createStore", this.form);
       this.form = [];
     },
-    deleteDropFile(index) {
-      this.dropFiles.splice(index, 1);
+    async createComment() {
+      if (this.commentToSend === "") {
+        return;
+      }
+
+      let commentPayload = [];
+      commentPayload.storeId = this.getFocusedStoreId;
+      commentPayload.comment = this.commentToSend;
+      this.$store.dispatch("stores/createComment", commentPayload);
+      this.commentToSend = "";
+    },
+
+    async deleteComment(commentId) {
+      console.log("hi");
+      let commentPayload = [];
+      commentPayload.commentId = commentId;
+      commentPayload.storeId = this.getFocusedStoreId;
+      this.$store.dispatch("stores/deleteComment", commentPayload);
     },
     printElem() {
       var mywindow = window.open("", "PRINT", "height=400,width=600");
@@ -361,11 +428,11 @@ export default {
       mywindow.print();
 
       return true;
-    }
+    },
   },
   components: {
     QrcodeVue,
-  }
+  },
 };
 </script>
 
