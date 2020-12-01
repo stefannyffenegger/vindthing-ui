@@ -75,9 +75,9 @@
             <p>Your Store belongs to a club? Or just want to share your Stores with friends and relatives? We got this covered 😃</p>
             <div class="content">
               <ul>
-                <li>Click the "View/Edit Store" <b-icon icon="file-eye"></b-icon> button</li>, this is also where you can view and update your Stores
+                <li>Click the "View/Edit Store" <b-icon icon="file-eye"></b-icon> button</li>, this is also where you can view and update your Store's details, add comments and even print out a QR-Code containing the url to the Store
                 <li>Go to the "Share" tab and add users to share</li>
-                <li>Here we go 👍</li>
+                <li>Here we go 👍 now your Store is available to all shared users</li>
               </ul>
             </div>
             <br>
