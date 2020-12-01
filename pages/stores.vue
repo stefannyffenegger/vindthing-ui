@@ -89,6 +89,7 @@
       </b-table-column>
 
 <!--       <b-table-column label="Comments" v-slot="props">
+      <b-table-column label="Comments" v-slot="props">
         <b-icon
           icon="chevron-left"
           @click.native="if (sliderIndex > 0) {sliderIndex--}"
@@ -226,7 +227,7 @@ export default {
     if (this.$route.query.id) {
       this.openModalViewtems(this.$route.query.id)
       }
-    
+
   }
 };
 </script>
