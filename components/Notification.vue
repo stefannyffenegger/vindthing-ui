@@ -1,7 +1,11 @@
 <template>
-  <div class="alert alert-danger" role="alert">
+  <b-notification
+    type="is-danger is-light"
+    role="alert"
+    :closable=false
+  >
     {{ message }}
-  </div>
+  </b-notification>
 </template>
 
 <script>

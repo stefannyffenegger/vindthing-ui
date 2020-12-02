@@ -11,18 +11,47 @@
           <strong>Email:</strong>
           {{ loggedInUser.email }}
         </p>
+        <hr>
+        <h2 class="subtitle">Update Profile</h2>
+        <form method="post" @submit.prevent="register">
+          <b-field label="New Name">
+            <b-input
+              type="text"
+              placeholder="John Doe"
+              name="name"
+              v-model="name"
+            ></b-input>
+          </b-field>
+          <b-field label="New Password">
+            <b-input
+              type="password"
+              placeholder="Password"
+              password-reveal
+              icon="key"
+              name="password"
+              v-model="password"
+            ></b-input>
+          </b-field>
+        </form>
       </div>
     </div>
   </section>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import {mapGetters} from "vuex";
 
 export default {
   middleware: 'auth',
   computed: {
     ...mapGetters(["loggedInUser"])
+  },
+  data() {
+    return {
+      name: '',
+      //email: '',
+      password: ''
+    }
   }
 }
 </script>
