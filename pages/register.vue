@@ -1,98 +1,96 @@
 <template>
-<section>
-  <section class="section">
-    <div class="container">
-      <div class="columns">
-        <div class="column is-4 is-offset-4">
-          <h2 class="title has-text-centered">Register!</h2>
+  <section>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-4 is-offset-4">
+            <h2 class="title has-text-centered">Register!</h2>
 
-          <Notification :message="error" v-if="error"/>
+            <Notification :message="error" v-if="error"/>
 
-          <form method="post" @submit.prevent="register">
-            <div class="field">
-              <label class="label">Name</label>
-              <div class="control">
-                <input
+            <form method="post" @submit.prevent="register">
+              <b-field label="Name">
+                <b-input
                   type="text"
-                  class="input"
+                  placeholder="John Doe"
                   name="name"
                   v-model="name"
                   required
-                />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Email</label>
-              <div class="control">
-                <input
+                ></b-input>
+              </b-field>
+              <b-field label="E-Mail">
+                <b-input
                   type="email"
-                  class="input"
-                  name="email"
+                  placeholder="Email"
+                  icon="email"
+                  name="username"
                   v-model="email"
                   required
-                />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Password</label>
-              <div class="control">
-                <input
+                ></b-input>
+              </b-field>
+              <b-field label="Password">
+                <b-input
                   type="password"
-                  class="input"
+                  placeholder="Password"
+                  password-reveal
+                  icon="key"
                   name="password"
                   v-model="password"
                   required
-                />
+                ></b-input>
+              </b-field>
+              <div class="control">
+                <button type="submit" class="button is-dark is-fullwidth">Register</button>
               </div>
-            </div>
-            <div class="control">
-              <button type="submit" class="button is-dark is-fullwidth">Register</button>
-            </div>
-          </form>
+            </form>
 
-          <div class="has-text-centered" style="margin-top: 20px">
-            Already got an account? <nuxt-link to="/login">Login</nuxt-link>
+            <div class="has-text-centered" style="margin-top: 20px">
+              Already got an account?
+              <nuxt-link to="/login">Login</nuxt-link>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
+    <section class="section has-background-white-bis">
+      <div class="container">
+        <h2 class="subtitle has-text-primary">Getting Started</h2>
+        <b-steps size="is-medium">
+          <b-step-item
+            label="Register"
+            icon="account-plus"
+            :clickable=true
+          >
+            <hr>
+            <h2 class="subtitle">Register</h2>
+            <p>Register an account with the form on this page</p>
+          </b-step-item>
+          <b-step-item
+            label="Confirm Email"
+            icon="email-check"
+            :clickable=true
+          >
+            <hr>
+            <h2 class="subtitle">Confirm Email</h2>
+            <p>You will get an email with a link to confirm your account</p>
+            <p>As soon as you confirm your account, it gets unlocked</p>
+          </b-step-item>
+          <b-step-item
+            label="Login"
+            icon="account-key"
+            :clickable=true
+          >
+            <hr>
+            <h2 class="subtitle">Login</h2>
+            <p>Welcome to Vindthing! now you can
+              <nuxt-link to="/login">Login</nuxt-link>
+              with your credentials
+            </p>
+          </b-step-item>
+        </b-steps>
+      </div>
+    </section>
   </section>
-  <section class="section has-background-white-bis">
-    <div class="container">
-      <h2 class="subtitle has-text-primary">Getting Started</h2>
-      <b-steps size="is-medium">
-        <b-step-item
-          label="Register"
-          icon="account-plus"
-          :clickable=true
-        >
-          <hr>
-          <h2 class="subtitle">Register</h2>
-          <p>Register an account with the form on this page</p>
-        </b-step-item>
-        <b-step-item
-          label="Confirm Email"
-          icon="email-check"
-          :clickable=true
-        >
-          <hr>
-          <h2 class="subtitle">Confirm Email</h2>
-          <p>You will get an email with a link to confirm your account</p>
-          <p>As soon as you confirm your account, it gets unlocked</p>
-        </b-step-item>
-        <b-step-item
-          label="Login"
-          icon="account-key"
-          :clickable=true
-        >
-          <hr>
-          <h2 class="subtitle">Login</h2>
-          <p>Welcome to Vindthing! now you can <nuxt-link to="/login">Login</nuxt-link> with your credentials</p>
-        </b-step-item>
-      </b-steps>
-    </div>
-  </section>
-</section>
 </template>
 
 <script>
@@ -120,16 +118,16 @@ export default {
           name: this.name,
           email: this.email,
           password: this.password
-        })
+        });
 
-        await this.$auth.loginWith('local', {
+        /*await this.$auth.loginWith('local', {
           data: {
             email: this.email,
             password: this.password
           },
-        })
+        });*/
 
-        this.$router.push('/')
+        await this.$router.push('/registered');
       } catch (e) {
         this.error = e.response.data.message
       }
