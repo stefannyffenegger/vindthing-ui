@@ -57,6 +57,9 @@ export const mutations = {
         const storeIndex = state.stores.findIndex(store => store.id === object.storeId );
         state.stores[storeIndex].imageId = object.imageId;
     },
+    UPDATE_PROFILE(state, userPayload) {
+        this.$auth.user.name = userPayload.name
+    },
     MOVE_ITEM(state, item) {
         var storeIndex = state.stores.findIndex(store => store.id === item.newStoreId );
         var tempOldStoreId = item.oldStoreId
@@ -101,6 +104,13 @@ export const actions = {
 
         commit('UPDATE_STORE', res.data)
     },
+
+    ///////////////////////////////////
+    async updateStoreSocket({ commit }, storeObject) {
+        commit('UPDATE_STORE', storeObject)
+    },
+    ///////////////////////////////////
+
     async deleteStore({ commit }, store_id) {
 
         let res = await this.$axios.post("/api/store/delete", {
@@ -157,6 +167,13 @@ export const actions = {
         });
 
         commit('REMOVE_COMMENT', commentPayload)
+    },
+    async updateProfile({ commit }, userPayload) {
+        let res = await this.$axios.put("/api/auth/profile/update", {
+            name: userPayload.name,
+            password: userPayload.password,
+        });
+        commit('UPDATE_PROFILE', userPayload)
     },
     async deleteItem({ commit }, item) {
 

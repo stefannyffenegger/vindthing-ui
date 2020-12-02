@@ -93,11 +93,11 @@ function connect(userName) {
           showMessage(createTextNode(JSON.parse(output.body)));
         });
 
-        stompClient.subscribe('/client/sync/store', function (output) {
+/*         stompClient.subscribe('/client/sync/store', function (output) {
           console.log("STORE SUBSCRIBE");
 
           messageNotification(createStoreMessage(JSON.parse(output.body)));
-        });
+        }); */
 
         sendConnection(' connected to server');
         setConnected(true);

@@ -21,6 +21,7 @@
       <LazyModalViewItems></LazyModalViewItems>
     </b-modal>
 
+
     <hr/>
 
     <div class="control">
@@ -155,6 +156,7 @@
           <td></td>
           <td></td>
         </tr>
+
       </template>
     </b-table>
   </section>
@@ -163,7 +165,10 @@
 <script>
 import {mapMutations, mapGetters} from "vuex";
 
+// import WebSocketService from '~/components/WebSocketService.vue'
+
 export default {
+  //components: { WebSocketService },
   data() {
     return {
       isComponentModalStoreActive: false,
@@ -224,12 +229,10 @@ export default {
   },
   mounted() {
     this.$store.dispatch("stores/getStores");
-    console.log(this.$WebSocketService)
-    //this.connect();
     if (this.$route.query.id) {
       this.openModalViewtems(this.$route.query.id)
       }
-
+    //console.log(WebSocketService)
   }
 };
 </script>

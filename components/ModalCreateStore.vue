@@ -15,6 +15,7 @@
                   class="input"
                   name="name"
                   v-model="form.name"
+                  :disabled=!checkOwner()
                   required
                 />
               </div>
@@ -27,6 +28,7 @@
                   class="input"
                   name="description"
                   v-model="form.description"
+                  :disabled=!checkOwner()
                   required
                 />
               </div>
@@ -39,6 +41,7 @@
                   class="input"
                   name="location"
                   v-model="form.location"
+                  :disabled=!checkOwner()
                   required
                 />
               </div>
