@@ -224,6 +224,8 @@ export default {
   },
   mounted() {
     this.$store.dispatch("stores/getStores");
+    console.log(this.$WebSocketService)
+    //this.connect();
     if (this.$route.query.id) {
       this.openModalViewtems(this.$route.query.id)
       }
