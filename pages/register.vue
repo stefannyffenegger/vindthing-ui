@@ -9,42 +9,36 @@
           <Notification :message="error" v-if="error"/>
 
           <form method="post" @submit.prevent="register">
-            <div class="field">
-              <label class="label">Name</label>
-              <div class="control">
-                <input
+            <b-field label="Name">
+                <b-input
                   type="text"
-                  class="input"
+                  placeholder="John Doe"
                   name="name"
                   v-model="name"
                   required
-                />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Email</label>
-              <div class="control">
-                <input
-                  type="email"
-                  class="input"
-                  name="email"
-                  v-model="email"
-                  required
-                />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Password</label>
-              <div class="control">
-                <input
-                  type="password"
-                  class="input"
-                  name="password"
-                  v-model="password"
-                  required
-                />
-              </div>
-            </div>
+                ></b-input>
+            </b-field>
+            <b-field label="E-Mail">
+              <b-input
+                type="email"
+                placeholder="Email"
+                icon="email"
+                name="username"
+                v-model="email"
+                required
+              ></b-input>
+            </b-field>
+            <b-field label="Password">
+              <b-input
+                type="password"
+                placeholder="Password"
+                password-reveal
+                icon="key"
+                name="password"
+                v-model="password"
+                required
+              ></b-input>
+            </b-field>
             <div class="control">
               <button type="submit" class="button is-dark is-fullwidth">Register</button>
             </div>
@@ -120,16 +114,16 @@ export default {
           name: this.name,
           email: this.email,
           password: this.password
-        })
+        });
 
-        await this.$auth.loginWith('local', {
+        /*await this.$auth.loginWith('local', {
           data: {
             email: this.email,
             password: this.password
           },
-        })
+        });*/
 
-        this.$router.push('/')
+        await this.$router.push('/registered');
       } catch (e) {
         this.error = e.response.data.message
       }

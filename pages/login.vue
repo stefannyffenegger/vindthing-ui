@@ -8,7 +8,6 @@
           <Notification :message="error" v-if="error"/>
 
           <form method="post" @submit.prevent="login">
-
             <b-field label="E-Mail">
               <b-input
                 type="email"
@@ -28,7 +27,6 @@
                 v-model="password"
               ></b-input>
             </b-field>
-
             <div class="control">
               <button type="submit" class="button is-dark is-fullwidth">Log In</button>
             </div>
