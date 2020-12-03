@@ -12,6 +12,7 @@ export default {
       connected: false,
     };
   },
+  middleware: "auth",
   methods: {
     async send(send_message) {
       console.log("Send message:" + send_message);
@@ -43,9 +44,15 @@ export default {
           console.log(frame);
 
 
-          this.stompClient.subscribe("/client/sync/store", (tick) => {
+          this.stompClient.subscribe("/client/store/update", (tick) => {
             let store = JSON.parse(tick.body);
             this.$store.dispatch("stores/updateStoreSocket", store);
+          });
+
+          this.stompClient.subscribe("/client/store/delete", (tick) => {
+            let store = JSON.parse(tick.body);
+            console.log(store)
+            this.$store.dispatch("stores/deleteStore", store.id);
           });
 
 

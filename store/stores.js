@@ -28,6 +28,14 @@ export const mutations = {
             state.stores.splice(storeIndex, 1, store);
         }
     },
+    UPDATE_STORE_SOCKET(state, store) {
+        const storeIndex = state.stores.findIndex(storeObject => storeObject.id === store.id );
+        if (storeIndex >= 0 ) {
+            state.stores.splice(storeIndex, 1, store);
+        } else {
+            state.stores.push(store)
+        }
+    },
     ADD_ITEM(state, item) {
         const index = state.stores.findIndex(store => store.id === item.storeId );
         delete item.storeId;
@@ -107,7 +115,7 @@ export const actions = {
 
     ///////////////////////////////////
     async updateStoreSocket({ commit }, storeObject) {
-        commit('UPDATE_STORE', storeObject)
+        commit('UPDATE_STORE_SOCKET', storeObject)
     },
     ///////////////////////////////////
 

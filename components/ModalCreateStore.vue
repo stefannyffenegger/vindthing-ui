@@ -6,89 +6,129 @@
     <div class="modal-card-body">
       <b-tabs>
         <b-tab-item label="Edit">
-          <form method="post" @submit.prevent="createStore">
-            <div class="field">
-              <label class="label">Name</label>
-              <div class="control">
-                <input
-                  type="text"
-                  class="input"
-                  name="name"
-                  v-model="form.name"
-                  :disabled=!checkOwner()
-                  required
-                />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Description</label>
-              <div class="control">
-                <input
-                  type="text"
-                  class="input"
-                  name="description"
-                  v-model="form.description"
-                  :disabled=!checkOwner()
-                  required
-                />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Location</label>
-              <div class="control">
-                <input
-                  type="text"
-                  class="input"
-                  name="location"
-                  v-model="form.location"
-                  :disabled=!checkOwner()
-                  required
-                />
-              </div>
-            </div>
-            <div class="columns">
-              <div class="control column">
-                <button
-                  @click.prevent="$parent.close()"
-                  class="button is-dark is-fullwidth"
+          <ValidationObserver v-slot="{ invalid }">
+            <form method="post" @submit.prevent="createStore">
+              <validation-provider
+                :rules="{
+                  required: true,
+                  regex: /^[a-zA-Z0-9_@./#&;:+-äÄöÖüÜ ]*$/
+                }"
+                v-slot="{ errors }"
+              >
+                <b-field
+                  label="Name"
+                  v-bind:type="{ 'is-danger': !!errors[0] }"
                 >
-                  Close
-                </button>
-              </div>
-              <div class="control column" v-if="!this.getFocusedStoreId">
-                <button
-                  type="submit"
-                  class="button is-dark is-fullwidth"
-                  @click="
-                    $parent.close();
-                    $buefy.toast.open({
-                      message: 'New Store created!',
-                      type: 'is-success',
-                      duration: 5000,
-                    });
-                  "
+                  <b-input
+                    placeholder="John Doe"
+                    name="name"
+                    v-bind:icon="!!errors[0] ? '' : 'check-circle'"
+                    v-model="form.name"
+                    required
+                    type="text"
+                    :disabled="!checkOwner()"
+                    validation-message="Not a valid Name"
+                    maxlength="40"
+                  ></b-input>
+                </b-field>
+              </validation-provider>
+
+              <validation-provider
+                :rules="{
+                  required: true,
+                  regex: /^[a-zA-Z0-9_@./#&;:+-äÄöÖüÜ ]*$/
+                }"
+                v-slot="{ errors }"
+              >
+                <b-field
+                  label="Description"
+                  v-bind:type="{ 'is-danger': !!errors[0] }"
                 >
-                  Create Store
-                </button>
-              </div>
-              <div class="control column" v-if="this.getFocusedStoreId">
-                <button
-                  type="submit"
-                  class="button is-dark is-fullwidth"
-                  @click="
-                    $parent.close();
-                    $buefy.toast.open({
-                      message: 'Store updated!',
-                      type: 'is-success',
-                      duration: 5000,
-                    });
-                  "
+                  <b-input
+                    placeholder="John Doe"
+                    name="description"
+                    v-bind:icon="!!errors[0] ? '' : 'check-circle'"
+                    v-model="form.description"
+                    required
+                    type="text"
+                    :disabled="!checkOwner()"
+                    validation-message="Not a valid Name"
+                    maxlength="40"
+                  ></b-input>
+                </b-field>
+              </validation-provider>
+
+              <validation-provider
+                :rules="{
+                  required: true,
+                  regex: /^[a-zA-Z0-9_@./#&;:+-äÄöÖüÜ ]*$/
+                }"
+                v-slot="{ errors }"
+              >
+                <b-field
+                  label="Location"
+                  v-bind:type="{ 'is-danger': !!errors[0] }"
                 >
-                  Update Store
-                </button>
+                  <b-input
+                    placeholder="John Doe"
+                    name="location"
+                    v-bind:icon="!!errors[0] ? '' : 'check-circle'"
+                    v-model="form.location"
+                    required
+                    type="text"
+                    :disabled="!checkOwner()"
+                    validation-message="Not a valid Name"
+                    maxlength="40"
+                  ></b-input>
+                </b-field>
+              </validation-provider>
+
+              <div class="columns">
+                <div class="control column">
+                  <button
+                    @click.prevent="$parent.close()"
+                    class="button is-dark is-fullwidth"
+                  >
+                    Close
+                  </button>
+                </div>
+                <div class="control column" v-if="!getFocusedStoreId">
+                  <button
+                    type="submit"
+                    class="button is-dark is-fullwidth"
+                    :disabled="invalid"
+                    @click="
+                      $parent.close();
+                      $buefy.toast.open({
+                        message: 'New Store created!',
+                        type: 'is-success',
+                        duration: 5000,
+                      });
+                    "
+                  >
+                    Create Store
+                  </button>
+                </div>
+                <div class="control column" v-else>
+                  <button
+                    type="submit"
+                    class="button is-dark is-fullwidth"
+                    :disabled="invalid"
+                    @click="
+                      $parent.close();
+                      $buefy.toast.open({
+                        message: 'Store updated!',
+                        type: 'is-success',
+                        duration: 5000,
+                      });
+                    "
+                  >
+                    Update Store
+                  </button>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </ValidationObserver>
         </b-tab-item>
 
         <b-tab-item label="Share" v-if="this.getFocusedStoreId">
@@ -174,19 +214,34 @@
             {{ comment.comment }}
           </b-message>
 
+          <ValidationObserver v-slot="{ invalid }">
           <form method="post" @submit.prevent="createComment">
-            <div class="field">
-              <label class="label">Comment</label>
-              <div class="control">
-                <input
-                  type="text"
-                  class="input"
-                  name="comment"
-                  v-model="commentToSend"
-                  required
-                />
-              </div>
-            </div>
+              <validation-provider
+                :rules="{
+                  required: true,
+                  regex: /^[a-zA-Z0-9_@./#&;:+-äÄöÖüÜ ]*$/
+                }"
+                v-slot="{ errors }"
+              >
+                <b-field
+                  label="Comment"
+                  v-bind:type="{ 'is-danger': !!errors[0] }"
+                >
+                  <b-input
+                    placeholder="John Doe"
+                    name="comment"
+                    v-bind:icon="!!errors[0] ? '' : 'check-circle'"
+                    v-model="commentToSend"
+                    required
+                    type="text"
+                    :disabled="!checkOwner()"
+                    validation-message="Not a valid Comment"
+                    maxlength="40"
+                  ></b-input>
+                </b-field>
+              </validation-provider>
+
+
             <div class="columns">
               <div class="control column">
                 <button
@@ -200,6 +255,7 @@
                 <button
                   type="submit"
                   class="button is-dark is-fullwidth"
+                  :disabled="invalid"
                   @click="
                     $buefy.toast.open({
                       message: 'New Comment created!',
@@ -213,6 +269,7 @@
               </div>
             </div>
           </form>
+          </ValidationObserver>
         </b-tab-item>
 
         <b-tab-item label="Picture" v-if="this.getFocusedStoreId">
@@ -233,12 +290,16 @@
           </b-field>
           <b-image
             v-if="!!getStore.imageId"
-            :src="'http://localhost:8080/api/image/download/' + getStore.imageId + '/' + this.$auth.getToken('local').slice(6)"
+            :src="
+              'http://localhost:8080/api/image/download/' +
+              getStore.imageId +
+              '/' +
+              this.$auth.getToken('local').slice(6)
+            "
             :alt="getStore.imageId"
             responsive
             ratio="6by4"
-        ></b-image>
-
+          ></b-image>
         </b-tab-item>
 
         <b-tab-item label="QR Code" v-if="this.getFocusedStoreId">
@@ -265,6 +326,29 @@
 <script>
 import { mapMutations, mapGetters } from "vuex";
 import QrcodeVue from "qrcode.vue";
+
+/////////////////////
+// Form Validation
+import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
+import {
+  required,
+  email,
+  alpha_dash,
+  alpha_num,
+  alpha_spaces,
+  regex,
+} from "vee-validate/dist/rules";
+
+extend("required", {
+  ...required,
+  message: "This field is required - Bensch",
+});
+extend("email", email);
+extend("alpha_dash", alpha_dash);
+extend("alpha_spaces", alpha_spaces);
+extend("alpha_num", alpha_num);
+extend("regex", regex);
+/////////////////////
 
 export default {
   data() {
@@ -353,6 +437,8 @@ export default {
     },
 
     checkOwner() {
+      if (!this.getFocusedStoreId) return true;
+
       const storeIndex = this.$store.state.stores.stores.findIndex(
         (store) => store.id === this.getFocusedStoreId
       );
@@ -434,6 +520,8 @@ export default {
   },
   components: {
     QrcodeVue,
+    ValidationProvider, // Form Validation
+    ValidationObserver, // Form Validation
   },
 };
 </script>

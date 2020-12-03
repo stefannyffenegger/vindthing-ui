@@ -1,7 +1,7 @@
 <template>
   <div>
     <Navbar/>
-    <LazyWebSocketService></LazyWebSocketService>
+    <LazyWebSocketService v-if=this.$auth.loggedIn></LazyWebSocketService>
     <nuxt/>
   </div>
 </template>
@@ -13,8 +13,6 @@ export default {
   components: { Navbar },
 
   async mounted() {
-    this.$store.dispatch("stores/getStores");
-
   }
 }
 </script>
