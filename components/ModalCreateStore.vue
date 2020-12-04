@@ -202,11 +202,10 @@
             </div>
           </div>
         </b-tab-item>
-
         <b-tab-item label="Comment" v-if="this.getFocusedStoreId">
           <b-message
-            v-for="(comment, index) in getStore.comments"
-            v-bind:key="index"
+            v-for="(comment) in getStore.comments"
+            v-bind:key="comment.id"
             @close="deleteComment(comment.id)"
             :title="comment.user + ' | ' + comment.created"
             aria-close-label="Close message"
@@ -236,7 +235,7 @@
                     type="text"
                     :disabled="!checkOwner()"
                     validation-message="Not a valid Comment"
-                    maxlength="40"
+                    maxlength="250"
                   ></b-input>
                 </b-field>
               </validation-provider>
@@ -504,7 +503,6 @@ export default {
     },
 
     async deleteComment(commentId) {
-      console.log("hi");
       let commentPayload = [];
       commentPayload.commentId = commentId;
       commentPayload.storeId = this.getFocusedStoreId;

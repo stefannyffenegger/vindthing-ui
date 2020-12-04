@@ -172,13 +172,6 @@ export default {
           password: this.password,
         });
 
-        /*await this.$auth.loginWith('local', {
-          data: {
-            email: this.email,
-            password: this.password
-          },
-        });*/
-
         this.$router.push("/registered");
       } catch (e) {
         this.error = e.response.data.message;

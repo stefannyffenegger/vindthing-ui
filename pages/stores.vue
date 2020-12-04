@@ -232,7 +232,6 @@ export default {
     if (this.$route.query.id) {
       this.openModalViewtems(this.$route.query.id)
       }
-    //console.log(WebSocketService)
   }
 };
 </script>

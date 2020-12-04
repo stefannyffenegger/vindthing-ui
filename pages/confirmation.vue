@@ -82,7 +82,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$route.query.id);
     if (this.$route.query.id) {
       this.confirmEmail();
     }

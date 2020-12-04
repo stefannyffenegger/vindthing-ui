@@ -51,8 +51,17 @@ export default {
 
           this.stompClient.subscribe("/client/store/delete", (tick) => {
             let store = JSON.parse(tick.body);
-            console.log(store)
-            this.$store.dispatch("stores/deleteStore", store.id);
+            this.$store.dispatch("stores/deleteStoreSocket", store.message);
+          });
+
+          this.stompClient.subscribe("/client/comment/delete", (tick) => {
+            let store = JSON.parse(tick.body);
+            this.$store.dispatch("stores/deleteCommentSocket", store);
+          });
+          
+          this.stompClient.subscribe("/client/item/delete", (tick) => {
+            let store = JSON.parse(tick.body);
+            this.$store.dispatch("stores/deleteItemSocket", store);
           });
 
 

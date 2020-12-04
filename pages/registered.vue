@@ -43,32 +43,12 @@
 </template>
 
 <script>
-import Notification from "~/components/Notification";
-
 export default {
   middleware: "guest",
   data() {
     return {
-      error: null,
       activeStep: 1,
     };
-  },
-  mounted() {
-    console.log(this.$route.query.id);
-    if (this.$route.query.id) {
-      this.confirmEmail();
-    }
-  },
-  methods: {
-    async confirmEmail() {
-      try {
-        let res = await this.$axios.get(
-          "/api/auth/profile/confirm-account?token=" + this.$route.query.id
-        );
-      } catch (e) {
-        this.error = e.response.data.message;
-      }
-    },
   },
 };
 </script>
