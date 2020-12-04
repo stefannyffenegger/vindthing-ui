@@ -121,7 +121,7 @@
               <b-icon icon="eye"></b-icon>
             </b-tooltip>
           </b-button>
-          <b-button type="is-danger" outlined
+          <b-button type="is-danger" :disabled="!checkOwner(props.row.id)" outlined
                     @click="confirmDelete($store.state.stores.stores[props.index].name, props.row.id)">
             <b-tooltip label="Delete Store" type="is-danger is-light">
               <b-icon icon="delete"></b-icon>
@@ -182,6 +182,7 @@ export default {
 
   middleware: "auth",
   computed: {
+    ...mapGetters(["loggedInUser"]),
     ...mapGetters({
       getAllStores: "stores/getStores",
       getFocusedStoreId: "stores/getFocusedStoreId",
@@ -225,6 +226,17 @@ export default {
     },
     itemTooltip() {
       return this.$store.state.stores.stores[props.index].items;
+    },
+    checkOwner(storeId) {
+
+      const storeIndex = this.$store.state.stores.stores.findIndex(
+        (store) => store.id === storeId
+      );
+
+      return (
+        this.$store.state.stores.stores[storeIndex].owner ===
+        this.loggedInUser.email
+      );
     },
   },
   mounted() {

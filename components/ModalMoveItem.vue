@@ -101,7 +101,8 @@ export default {
         this.form.newStoreId = this.selected.id;
         this.form.itemId = this.getFocusedItemId;
         this.$store.dispatch("stores/moveItem", this.form);
-        this.$store.dispatch("stores/setFocusedStoreId", this.form.newStoreId);
+        // Jump into the new Store
+        // this.$store.dispatch("stores/setFocusedStoreId", this.form.newStoreId);
         this.form = [];
       }
     },

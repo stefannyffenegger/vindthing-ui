@@ -233,7 +233,6 @@
                     v-model="commentToSend"
                     required
                     type="text"
-                    :disabled="!checkOwner()"
                     validation-message="Not a valid Comment"
                     maxlength="250"
                   ></b-input>
@@ -272,10 +271,11 @@
         </b-tab-item>
 
         <b-tab-item label="Picture" v-if="this.getFocusedStoreId">
-          <b-field class="file is-primary" :class="{ 'has-name': !!file }">
+          <b-field class="file is-light" :class="{ 'has-name': !!file, 'is-primary': checkOwner() }">
             <b-upload
               @input="uploadFile('store')"
               v-model="file"
+              :disabled="!checkOwner()"
               class="file-label"
             >
               <span class="file-cta">

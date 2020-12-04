@@ -24,9 +24,6 @@
           <b-navbar-item>
             <nuxt-link to="/profile">Profile</nuxt-link>
           </b-navbar-item>
-          <b-navbar-item>
-            <nuxt-link to="/ws-test">Websocket Tests</nuxt-link>
-          </b-navbar-item>
           <hr class="navbar-divider">
           <b-navbar-item @click="logout">
             Logout
