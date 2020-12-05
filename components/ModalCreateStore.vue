@@ -20,7 +20,7 @@
                   v-bind:type="{ 'is-danger': !!errors[0] }"
                 >
                   <b-input
-                    placeholder="John Doe"
+                    placeholder="Shelf, Box, ..."
                     name="name"
                     v-bind:icon="!!errors[0] ? '' : 'check-circle'"
                     v-model="form.name"
@@ -45,7 +45,7 @@
                   v-bind:type="{ 'is-danger': !!errors[0] }"
                 >
                   <b-input
-                    placeholder="John Doe"
+                    placeholder="Description"
                     name="description"
                     v-bind:icon="!!errors[0] ? '' : 'check-circle'"
                     v-model="form.description"
@@ -70,7 +70,7 @@
                   v-bind:type="{ 'is-danger': !!errors[0] }"
                 >
                   <b-input
-                    placeholder="John Doe"
+                    placeholder="Living Room, Kitchen, ..."
                     name="location"
                     v-bind:icon="!!errors[0] ? '' : 'check-circle'"
                     v-model="form.location"
@@ -227,7 +227,6 @@
                   v-bind:type="{ 'is-danger': !!errors[0] }"
                 >
                   <b-input
-                    placeholder="John Doe"
                     name="comment"
                     v-bind:icon="!!errors[0] ? '' : 'check-circle'"
                     v-model="commentToSend"
@@ -311,6 +310,7 @@
             :value="'http://localhost:3000/stores?id=' + this.getFocusedStoreId"
             size="400"
             level="H"
+            type="svg"
           ></qrcode-vue>
           <br />
           <button @click="printElem()" class="button is-dark is-half">
@@ -509,12 +509,22 @@ export default {
       this.$store.dispatch("stores/deleteComment", commentPayload);
     },
     printElem() {
-      var mywindow = window.open("", "PRINT", "height=400,width=600");
+      //var mywindow = window.open("", "PRINT", "height=400,width=600");
+      /*var ctx = document.getElementsByTagName("canvas")[0].getContext("2d");
+      var image = document.getElementsByTagName("canvas")[0];
+      console.log("image: ");
+      console.log(image);
 
-      mywindow.print();
+      ctx.fillRect(100,100,100,100);
+      image.src = canvas.toDataURL("image/png");
+      var link = document.getElementById("link");
+      link.addEventListener('click', function() {
+        window.open(canvas.toDataURL("image/png"), '_blank');
+      });
+      //mywindow.print();
 
-      return true;
-    },
+      /*/return true;
+    }
   },
   components: {
     QrcodeVue,
