@@ -19,7 +19,6 @@
                     v-bind:type="{ 'is-danger': !!errors[0] }"
                   >
                     <b-input
-                      placeholder="John Doe"
                       name="name"
                       v-bind:icon="!!errors[0] ? '' : 'check-circle'"
                       v-model="name"
