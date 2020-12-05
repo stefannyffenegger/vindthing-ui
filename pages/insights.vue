@@ -4,9 +4,10 @@
     <hr/>
     <b-tabs>
       <b-tab-item label="Item Usage">
-        <pie-chart :data="pieChartData" :options="barChartOptions" :height="200"/>
+        <pie-chart v-if="loaded" :data="pieChartData" :options="pieChartOptions" :height="200"/>
+        <!-- <LazyPieChart></LazyPieChart> -->
       </b-tab-item>
-      <b-tab-item label="Something else">
+      <b-tab-item label="Item creation">
         <bar-chart :data="barChartData" :options="barChartOptions" :height="200"/>
       </b-tab-item>
     </b-tabs>
@@ -19,10 +20,11 @@ import {mapMutations, mapGetters} from "vuex";
 export default {
   data() {
     return {
+      loaded: false,
+
       labelsPieChart: [],
       dataPieChart: [],
       isCardLayout: false,
-      test: ["test1", "test2", "test3"],
       slider: [],
       barChartData: {
         labels: [
@@ -96,16 +98,33 @@ export default {
         datasets: [
           {
             label: 'Uses',
-            data: [10, 15, 20, 30, 40, 50, 60, 70, 34, 45, 11, 78, 45],
-            backgroundColor: '#ff9305'
+            data: [],
+            backgroundColor: ["#2274a5","#f75c03","#f1c40f","#d90368","#00cc66", "#ebdccb","#00c49a","#ef233c","#35a7ff","#2e294e","#00171f","#00cc99","#5e7ce2","#e6e6ea","#341c1c"], 
           }
         ]
-      }
+      },
+      pieChartOptions: {
+        responsive: true,
+        legend: {
+          display: false
+        },
+        title: {
+          display: true,
+          text: 'Usage',
+          fontSize: 24,
+          fontColor: '#6b7280'
+        },
+        tooltips: {
+          backgroundColor: '#17BF62'
+        },
+
+      },
     }
   },
-  mounted() {
-    this.$store.dispatch("stores/getStores");
-    this.$store.dispatch("stores/setFocusedStoreId", "5fc28cfac354b846a87963d8");
+  async mounted() {
+    await this.$store.dispatch("stores/getStores");
+    await this.$store.dispatch("stores/setFocusedStoreId", "5fca67712384ca064ba6e210");
+    await this.getUseCount();
   },
   middleware: "auth",
   computed: {
@@ -129,22 +148,23 @@ export default {
         options: chartData.options,
       });
     },
-    async getItems() {
-      
+    getItems() {
       const index = this.$store.state.stores.stores.findIndex(
         (store) => store.id === this.getFocusedStoreId
       );
       console.log(this.$store.state.stores.stores)
+      // 0 als Quick Fix
       return this.$store.state.stores.stores[index].items;
     },
     async getUseCount() {
       
       let manipulate = this.getItems()
       
-      let useCounts = manipulate.map(item => ({name: item.name, useCount: item.useCount})
-        )
-        .flat();
-        console.log(useCounts)
+      /* this.useCountsNames = manipulate.map(item => ({name: item.name, useCount: item.useCount})).flat(); */
+      this.pieChartData.datasets[0].data = manipulate.map(item => (item.useCount)).flat();
+      this.pieChartData.labels = manipulate.map(item => (item.name)).flat();
+
+      this.loaded = true
 
     }
   },
