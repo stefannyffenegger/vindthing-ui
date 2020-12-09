@@ -15,13 +15,13 @@ RUN npm install
 # since it builds the server as well
 RUN npm run build
 
-# expose 6000 on container
-EXPOSE 6000
+# expose 9900 on container
+EXPOSE 9900
 
 # set app serving to permissive / assigned
 ENV NUXT_HOST=0.0.0.0
 # set app port
-ENV NUXT_PORT=6000
+ENV NUXT_PORT=9900
 
 # Traefik Deployment
 LABEL "traefik.enable"="true"
