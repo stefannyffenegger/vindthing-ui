@@ -23,5 +23,11 @@ ENV NUXT_HOST=0.0.0.0
 # set app port
 ENV NUXT_PORT=5000
 
+# Traefik Deployment
+LABEL "traefik.enable"="true"
+LABEL "traefik.http.routers.whoami.rule"="Host(`vindthing.scientists.ch`)"
+LABEL "traefik.http.routers.whoami.entrypoints"="websecure"
+LABEL "traefik.http.routers.whoami.tls.certresolver"="myresolver"
+
 # start the app
 CMD [ "npm", "start" ]
