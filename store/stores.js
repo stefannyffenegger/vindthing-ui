@@ -84,7 +84,7 @@ export const mutations = {
 
 export const actions = {
     async getStores({ commit }) {
-        this.$axios.get("/api/store/get-all")
+        return this.$axios.get("/api/store/get-all")
             .then(response => { commit('SET_STORE', response.data) })
     },
     async createStore({ commit }, form) {

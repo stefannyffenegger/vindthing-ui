@@ -64,7 +64,7 @@ export default {
     rewriteRedirects: true,
     redirect: {
       login: '/login',
-      register: '/chat',
+      register: '/register',
       logout: '/login',
       callback: '/login',
       home: '/',
@@ -82,5 +82,6 @@ export default {
   },
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
+    transpile: ['vee-validate','vee-validate/dist/rules']
   }
 }
