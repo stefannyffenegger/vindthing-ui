@@ -20,6 +20,7 @@
                   >
                     <b-input
                       name="name"
+                      placeholder="John Doe"
                       v-bind:icon="!!errors[0] ? '' : 'check-circle'"
                       v-model="name"
                       required
