@@ -17,7 +17,7 @@
         <ValidationObserver v-slot="{ invalid }">
           <form method="post" @submit.prevent="updateProfile">
             <validation-provider
-              rules="required|alpha_dash"
+              :rules="`${!form.password ? 'required|alpha_num' : 'alpha_num'}`"
               v-slot="{ errors }"
             >
               <b-field
@@ -27,18 +27,22 @@
                 <b-input
                   placeholder="John Doe"
                   name="name"
-                  v-bind:icon="!!errors[0] ? 'email' : 'check-circle'"
+                  v-bind:icon="!!errors[0] ? '' : 'check-circle'"
                   v-model="form.name"
-                  required
                   validation-message="Not a valid Name"
                   maxlength="30"
                 ></b-input>
               </b-field>
+              <span class="help is-danger">{{ errors[0] }}</span>
             </validation-provider>
 
-            <validation-provider rules="required|alpha_num" v-slot="{ errors }">
+            <validation-provider
+              name="password"
+              :rules="`${!form.name ? 'required|password:@confirm' : 'password:@confirm'}`"
+              v-slot="{ errors }"
+            >
               <b-field
-                label="Password"
+                label="New Password"
                 v-bind:type="{ 'is-danger': !!errors[0] }"
               >
                 <b-input
@@ -50,7 +54,28 @@
                   maxlength="40"
                   v-model="form.password"
                   validation-message="Not a valid Password"
-                  required
+                ></b-input>
+              </b-field>
+              <span class="help is-danger">{{ errors[0] }}</span>
+            </validation-provider>
+
+            <validation-provider
+              name="confirm"
+              rules="password:@password"
+              v-slot="{ errors }"
+            >
+              <b-field
+                label="Confirm new Password"
+                v-bind:type="{ 'is-danger': !!errors[0] }"
+              >
+                <b-input
+                  type="password"
+                  placeholder="Password"
+                  password-reveal
+                  v-bind:icon="!!errors[0] ? 'key' : 'check-circle'"
+                  name="password"
+                  maxlength="40"
+                  v-model="confirmation"
                 ></b-input>
               </b-field>
             </validation-provider>
@@ -94,11 +119,19 @@ import {
 
 extend("required", {
   ...required,
-  message: "This field is required - Bensch",
+  message: "One of this fields is required",
 });
 extend("email", email);
 extend("alpha_dash", alpha_dash);
 extend("alpha_num", alpha_num);
+
+extend("password", {
+  params: ["target"],
+  validate(value, { target }) {
+    return value === target;
+  },
+  message: "Password confirmation does not match",
+});
 /////////////////////
 
 export default {
@@ -112,6 +145,7 @@ export default {
   },
   data() {
     return {
+      confirmation: "",
       form: {
         name: "",
         //email: '',

@@ -3,7 +3,7 @@
     <h2 class="title">Insights</h2>
     <hr />
     <b-tabs>
-      <b-tab-item label="Item Usage">
+      <b-tab-item label="Items Usage">
 
           <div class="columns">
             <div class="column">
@@ -35,7 +35,7 @@
         />
         <!-- <LazyPieChart></LazyPieChart> -->
       </b-tab-item>
-      <b-tab-item label="Item creation">
+      <b-tab-item label="Items Creation">
 
           <div class="columns">
             <div class="column">
@@ -240,7 +240,7 @@ export default {
         .flat();
       this.pieChartData.labels = manipulate.map((item) => item.name).flat();
 
-      this.pieChartOptions.title.text = "Usage of " + this.selected.name
+      this.pieChartOptions.title.text = "Items Usage Count of " + this.selected.name
 
       this.forceRerender();
     },
@@ -292,7 +292,7 @@ export default {
       } */
 
       // Set Title of Chart
-      this.barChartOptions.title.text = "Created of " + this.selected.name;
+      this.barChartOptions.title.text = "Creation / Update count of " + this.selected.name;
 
       console.log(this.barChartData.datasets[0].data)
       console.log(this.barChartData.datasets[1].data)

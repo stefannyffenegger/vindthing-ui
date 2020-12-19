@@ -48,7 +48,7 @@
                 </validation-provider>
 
                 <validation-provider
-                  rules="required|alpha_num"
+                  rules="required|password:@confirm"
                   v-slot="{ errors }"
                 >
                   <b-field
@@ -67,7 +67,31 @@
                       required
                     ></b-input>
                   </b-field>
+                  <span class="help is-danger">{{ errors[0] }}</span>
                 </validation-provider>
+
+                <validation-provider
+                  name="confirm"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <b-field
+                    label="Confirm Password"
+                    v-bind:type="{ 'is-danger': !!errors[0] }"
+                  >
+                    <b-input
+                      type="password"
+                      placeholder="Password"
+                      password-reveal
+                      v-bind:icon="!!errors[0] ? 'key' : 'check-circle'"
+                      name="password"
+                      maxlength="40"
+                      v-model="confirmation"
+                    ></b-input>
+                  </b-field>
+                  <span class="help is-danger">{{ errors[0] }}</span>
+                </validation-provider>
+
                 <br />
 
                 <div class="control">
@@ -136,11 +160,20 @@ import {
 
 extend("required", {
   ...required,
-  message: "This field is required - Bensch",
+  message: "This field is required",
 });
 extend("email", email);
 extend("alpha_dash", alpha_dash);
 extend("alpha_num", alpha_num);
+
+extend('password', {
+  params: ['target'],
+  validate(value, { target }) {
+    return value === target;
+  },
+  message: 'Password confirmation does not match'
+});
+
 /////////////////////
 
 
@@ -158,6 +191,7 @@ export default {
       name: "",
       email: "",
       password: "",
+      confirmation: "",
       error: null,
     };
   },
