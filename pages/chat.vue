@@ -19,7 +19,9 @@
 
         <div class="columns">
           <div class="column">
-            <p v-if="$store.state.chat.users === null">No active Users found.</p>
+            <p v-if="$store.state.chat.users === null">
+              No active Users found.
+            </p>
             <p v-else>Click on a User to begin chat</p>
             <br />
             <ul id="active-users-new" class="">
@@ -42,7 +44,10 @@
 
         <div id="divSelectedUser" class="columns" style="">
           <div class="column">
-            <p v-show="$store.state.chat.users !== null" class="badge badge-secondary">
+            <p
+              v-show="$store.state.chat.users !== null"
+              class="badge badge-secondary"
+            >
               Selected User: {{ selectedUser }}
             </p>
           </div>
@@ -60,7 +65,14 @@
             />
           </div>
           <div class="column">
-            <b-button id="send" :disabled="!selectedUser || !inputField" class="button is-info" @click="send(userName);inputField=''"
+            <b-button
+              id="send"
+              :disabled="!selectedUser || !inputField"
+              class="button is-info"
+              @click="
+                send(userName, inputField);
+                inputField = '';
+              "
               >Send</b-button
             >
             <b-button
@@ -74,23 +86,22 @@
       </div>
 
       <div class="column is-half">
-        <div 
-            v-for="(message, index) in $store.state.chat.messages"
-            :key="index"
-            v-bind:class="message.from === userName ? 'column is-offset-4' : 'column is-8'"
-            >
+        <div
+          v-for="(message, index) in $store.state.chat.messages"
+          :key="index"
+          v-bind:class="
+            message.from === userName ? 'column is-offset-4' : 'column is-8'
+          "
+        >
           <b-message
-            :closable=false
+            :closable="false"
             v-bind:type="message.from === userName ? 'is-info' : 'is-primary'"
-            
             :title="message.from + ' | ' + message.time"
             aria-close-label="Close message"
           >
             {{ message.text }}
           </b-message>
-
         </div>
-
       </div>
     </div>
   </div>
@@ -175,31 +186,38 @@ export default {
     /**
      * Send a message and dispatch to Vuex Chat Store
      */
-    send(userName) {
+    send(userName, inputMessage) {
       if (typeof this.selectedUser !== "string") {
         console.log(this.selectedUser);
         this.userSelectWarningSnackbar("Please select a user first");
         return;
       }
 
-      let message = { from: userName, text: text, recipient: this.selectedUser }
+      let message = {
+        from: userName,
+        text: inputMessage,
+        recipient: this.selectedUser,
+      };
 
       this.$store.dispatch("chat/sendMessage", message);
-
     },
 
-
+    /**
+     * Clears all Vuex Store Messages
+     */
     clearMessages() {
       this.$store.dispatch("chat/clearMessage");
     },
 
+    /**
+     * Set selected User
+     */
     setSelectedUser(username) {
       this.selectedUser = username;
     },
 
     /**
-     * COMMENT ME
-     * @param storeObject
+     * Update Users via push to Vuex Store
      */
     updateUsers(userName) {
       try {
@@ -207,11 +225,11 @@ export default {
           .get("/api/chat/active-users-except/" + userName, {})
           .then((response) => {
             let userList = response.data;
-            
-            console.log(userList)
+
+            console.log(userList);
 
             if (userList.length == 0) {
-               return;
+              return;
             }
 
             // Set User List to local data - Reactive with Page
@@ -225,8 +243,11 @@ export default {
       return "done";
     },
   },
+  /**
+   * Execute Update User function when page got created
+   */
   created() {
-      this.updateUsers(this.userName)
-    }
+    this.updateUsers(this.userName);
+  },
 };
 </script>
