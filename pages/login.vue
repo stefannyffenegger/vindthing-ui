@@ -73,8 +73,9 @@
 <script>
 import Notification from "~/components/Notification";
 
-/////////////////////
+//////////////////////////////////////////
 // Form Validation
+//////////////////////////////////////////
 import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
 import {
   required,
@@ -90,10 +91,13 @@ extend("required", {
 extend("email", email);
 extend("alpha_dash", alpha_dash);
 extend("alpha_num", alpha_num);
-/////////////////////
+//////////////////////////////////////////
+//////////////////////////////////////////
 
 export default {
+  /* Guest Component to let anonymous Users on this page */
   middleware: "guest",
+
   components: {
     Notification,
     ValidationProvider, // Form Validation
@@ -102,6 +106,7 @@ export default {
 
   data() {
     return {
+      /* Form data for User Login*/
       email: "",
       password: "",
       error: null,
@@ -109,6 +114,7 @@ export default {
   },
 
   methods: {
+    /* Login triggers Auth module to send an axios request, if successfull, token and user profile data gets saved in Vuex Store */
     async login() {
       try {
         await this.$auth.loginWith("local", {
@@ -118,8 +124,8 @@ export default {
           },
         });
 
-        // this.$router.push('/')
       } catch (e) {
+        /* Log error to Notification Component - Bar on top of Register field  */
         this.error = e.response.data.message;
       }
     },

@@ -21,8 +21,7 @@
       <LazyModalViewItems></LazyModalViewItems>
     </b-modal>
 
-
-    <hr/>
+    <hr />
 
     <div class="control">
       <b-switch v-model="isCardLayout">Card View</b-switch>
@@ -32,7 +31,7 @@
       :data="getAllStores"
       ref="table"
       :card-layout="isCardLayout"
-      :mobile-cards=true
+      :mobile-cards="true"
       hoverable
       paginated
       per-page="20"
@@ -55,18 +54,13 @@
         />
       </template>
 
-      <b-table-column
-        searchable
-        field="name"
-        label="Name"
-        v-slot="props"
-      >
-        <b-tooltip
-          label="itemTooltip"
-          size="is-small"
-          multilined
-          type="is-primary is-light"
-        >
+      <b-table-column searchable field="name" label="Name" v-slot="props">
+        <b-tooltip size="is-small" multilined type="is-primary is-light">
+          <template v-slot:content>
+            <p v-for="(item, index) in itemTooltip(props.row.id).slice(0, 5)" :key="index">
+              {{ item }}
+            </p>
+          </template>
           {{ props.row.name }}
         </b-tooltip>
       </b-table-column>
@@ -89,40 +83,46 @@
         {{ props.row.location }}
       </b-table-column>
 
-<!--       <b-table-column label="Comments" v-slot="props">
-      <b-table-column label="Comments" v-slot="props">
-        <b-icon
-          icon="chevron-left"
-          @click.native="if (sliderIndex > 0) {sliderIndex--}"
-        >
-        </b-icon>
-        {{ getComment(props.row.id) }}
-        <b-icon
-          icon="chevron-right"
-          @click.native="if (sliderIndex < props.row.comments.length) {sliderIndex++};"
-        >
-        </b-icon>
-      </b-table-column> -->
-
       <b-table-column v-slot="props">
         <div class="buttons has-addons level-right">
-          <b-button type="is-primary" outlined @click="openModalStoreUpdate(props.row.id)">
+          <b-button
+            type="is-primary"
+            outlined
+            @click="openModalStoreUpdate(props.row.id)"
+          >
             <b-tooltip label="View/Edit Store" type="is-primary is-light">
               <b-icon icon="file-eye"></b-icon>
             </b-tooltip>
           </b-button>
-          <b-button type="is-primary" outlined @click="openModalItemCreate(props.row.id)">
+          <b-button
+            type="is-primary"
+            outlined
+            @click="openModalItemCreate(props.row.id)"
+          >
             <b-tooltip label="Add Item" type="is-primary is-light">
               <b-icon icon="plus"></b-icon>
             </b-tooltip>
           </b-button>
-          <b-button type="is-primary" outlined @click="openModalViewtems(props.row.id)">
+          <b-button
+            type="is-primary"
+            outlined
+            @click="openModalViewtems(props.row.id)"
+          >
             <b-tooltip label="View Items" type="is-primary is-light">
               <b-icon icon="eye"></b-icon>
             </b-tooltip>
           </b-button>
-          <b-button type="is-danger" :disabled="!checkOwner(props.row.id)" outlined
-                    @click="confirmDelete($store.state.stores.stores[props.index].name, props.row.id)">
+          <b-button
+            type="is-danger"
+            :disabled="!checkOwner(props.row.id)"
+            outlined
+            @click="
+              confirmDelete(
+                $store.state.stores.stores[props.index].name,
+                props.row.id
+              )
+            "
+          >
             <b-tooltip label="Delete Store" type="is-danger is-light">
               <b-icon icon="delete"></b-icon>
             </b-tooltip>
@@ -130,10 +130,7 @@
         </div>
       </b-table-column>
 
-      <template
-        slot="detail"
-        slot-scope="props"
-      >
+      <template slot="detail" slot-scope="props">
         <tr class="small">
           <th></th>
           <th>Name</th>
@@ -142,7 +139,11 @@
           <th></th>
           <th></th>
         </tr>
-        <tr v-for="item in $store.state.stores.stores[props.index].items" :key="item.id" class="small">
+        <tr
+          v-for="item in $store.state.stores.stores[props.index].items"
+          :key="item.id"
+          class="small"
+        >
           <td></td>
           <td>
             {{ item.name }}
@@ -156,79 +157,86 @@
           <td></td>
           <td></td>
         </tr>
-
       </template>
     </b-table>
   </section>
 </template>
 
 <script>
-import {mapMutations, mapGetters} from "vuex";
-
-// import WebSocketService from '~/components/WebSocketService.vue'
+/* Import all Getters for Vuex Store */
+import { mapMutations, mapGetters } from "vuex";
 
 export default {
-  //components: { WebSocketService },
   data() {
     return {
+      /* States for Modals / button triggers event to change the boolean value */
       isComponentModalStoreActive: false,
       isComponentModalItemActive: false,
       isComponentModalViewItemsActive: false,
       isCardLayout: false,
-      test: ["test1", "test2", "test3"],
-      sliderIndex: 0
+      sliderIndex: 0,
     };
   },
 
+  /* Force User Authentication by Import auth Module */
   middleware: "auth",
+  /* Load getters to interact with Vuex Store (Stores & Auth) */
   computed: {
     ...mapGetters(["loggedInUser"]),
     ...mapGetters({
       getAllStores: "stores/getStores",
       getFocusedStoreId: "stores/getFocusedStoreId",
     }),
-    getItems() {
-      const index = this.$store.state.stores.stores.findIndex(store => store.id === this.getFocusedStoreId);
-      return this.$store.state.stores.stores[index].items
-    }
   },
   methods: {
+    /* Dispatch delete Store Id to Vuex Actions */
     async deleteStore(storeId) {
       this.$store.dispatch("stores/deleteStore", storeId);
-      this.$buefy.toast.open('Store deleted!')
+      this.$buefy.toast.open("Store deleted!");
     },
+    /* Delete Confirmation after triggering a delete button on the page */
     confirmDelete(name, id) {
       this.$buefy.dialog.confirm({
-        title: 'Delete Store',
-        message: 'Confirm to <b>delete</b> ' + name + '? This action cannot be undone.',
-        confirmText: 'Delete ' + name,
-        type: 'is-danger',
+        title: "Delete Store",
+        message:
+          "Confirm to <b>delete</b> " +
+          name +
+          "? This action cannot be undone.",
+        confirmText: "Delete " + name,
+        type: "is-danger",
         hasIcon: true,
-        onConfirm: () => this.deleteStore(id)
-      })
+        onConfirm: () => this.deleteStore(id),
+      });
     },
-    getComment(storeId) {
-      const index = this.$store.state.stores.stores.findIndex(store => store.id === storeId);
-      console.log(storeId)
-      if (this.sliderIndex !== null) return this.$store.state.stores.stores[index].comments[this.sliderIndex].comment
+    /* Open Create Modal and set Focues Store Id */
+    async openModalItemCreate(storeId) {
+      await this.$store.dispatch("stores/setFocusedStoreId", storeId);
+      this.isComponentModalItemActive = true;
     },
-    openModalItemCreate(storeId) {
-      this.$store.dispatch("stores/setFocusedStoreId", storeId);
-      this.isComponentModalItemActive = true
+    /* Open edit Modal and set Focues Store Id */
+    async openModalStoreUpdate(storeId) {
+      await this.$store.dispatch("stores/setFocusedStoreId", storeId);
+      this.isComponentModalStoreActive = true;
     },
-    openModalStoreUpdate(storeId) {
-      this.$store.dispatch("stores/setFocusedStoreId", storeId);
-      this.isComponentModalStoreActive = true
-    },
+    /* Open View Items Modal */
     async openModalViewtems(storeId) {
       await this.$store.dispatch("stores/setFocusedStoreId", storeId);
-      this.isComponentModalViewItemsActive = true
+      this.isComponentModalViewItemsActive = true;
     },
-    itemTooltip() {
-      return this.$store.state.stores.stores[props.index].items;
-    },
-    checkOwner(storeId) {
+    /* Item tooltips when hovering over Store - Is a Requirement */
+    itemTooltip(storeId) {
+      const storeIndex = this.$store.state.stores.stores.findIndex(
+        (store) => store.id === storeId
+      );
 
+      let itemNames = this.$store.state.stores.stores[storeIndex].items
+        .map((item) => item.name)
+        .flat();
+
+      return itemNames;
+    },
+    /* Check if User is Owner of a store */
+    checkOwner(storeId) {
       const storeIndex = this.$store.state.stores.stores.findIndex(
         (store) => store.id === storeId
       );
@@ -240,10 +248,11 @@ export default {
     },
   },
   mounted() {
+    /* Get all stores where the User is an owner / or a shared user */
     this.$store.dispatch("stores/getStores");
     if (this.$route.query.id) {
-      this.openModalViewtems(this.$route.query.id)
-      }
-  }
+      this.openModalViewtems(this.$route.query.id);
+    }
+  },
 };
 </script>

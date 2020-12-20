@@ -5,7 +5,6 @@ import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 
 export default {
-  //name: "websocketdemo",
   data() {
     return {
       received_messages: [],
@@ -14,14 +13,6 @@ export default {
   },
   middleware: "auth",
   methods: {
-    async send(send_message) {
-      console.log("Send message:" + send_message);
-      if (this.stompClient && this.stompClient.connected) {
-        const msg = { name: this.send_message };
-        console.log(JSON.stringify(msg));
-        this.stompClient.send("/app/hello", JSON.stringify(msg), {});
-      }
-    },
     connect() {
       let formData = new FormData();
       formData.append("username", this.$auth.$state.user.email);
@@ -37,8 +28,6 @@ export default {
       this.stompClient = Stomp.over(this.socket);
 
       this.stompClient.connect( {username: this.$auth.$state.user.email},
-
-
         (frame) => {
           this.connected = true;
           console.log(frame);
@@ -65,13 +54,30 @@ export default {
           });
 
 
+          //////////////////
+          //////////////////
+          this.stompClient.subscribe("/topic/active", (tick) => {
+            let users = JSON.parse(tick.body);
+            this.$store.dispatch("chat/setUsers", users);
+          });
+
+          this.stompClient.subscribe("/client/queue/messages", (tick) => {
+            let message = JSON.parse(tick.body);
+            this.$store.dispatch("chat/addMessage", message);
+            if (message.from !== this.$auth.$state.user.email) { this.messageNotification(message); } 
+          });
+          //////////////////
+          //////////////////
+
+          this.stompClient.send("/app/broadcast", JSON.stringify({ from: "server", text: "Connected" }), {})
+
+
         }, (error) => {
           console.log(error);
           this.connected = false;
         }
-
-
       );
+      
     },
     disconnect() {
       if (this.stompClient) {
@@ -82,9 +88,43 @@ export default {
     tickleConnection() {
       this.connected ? this.disconnect() : this.connect();
     },
+    messageNotification(msg) {
+      this.$nuxt.$buefy.notification.open({
+        duration: 5000,
+        message: msg,
+        type: "is-info is-light",
+        iconPack: "mdi",
+        hasIcon: true,
+        icon: "account",
+        queue: false,
+        position: "is-bottom-right",
+      });
+    },
   },
-    mounted() {
+  mounted() {
       this.connect();
     },
+  created() {
+    this.unsubscribe = this.$store.subscribe((mutation, state) => {
+      console.log(mutation.payload);
+      if (mutation.type === 'chat/SEND_MESSAGE') {
+        console.log(`Updating to ${mutation}`);
+
+        let message = mutation.payload;
+
+        // Do whatever makes sense now
+        this.stompClient.send("/ws/chat", JSON.stringify(
+          { from: message.from, text: message.text, recipient: message.recipient },
+          { sender: message.from }
+        )
+      );
+
+      }
+    });
+    
+  },
+  beforeDestroy() {
+    this.unsubscribe();
+  },
 };
 </script>

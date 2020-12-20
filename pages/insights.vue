@@ -194,23 +194,20 @@ export default {
     };
   },
   async mounted() {
+    /* Get all stores where the User is an owner / or a shared user */
     this.$store.dispatch("stores/getStores").then((res) => {
                 this.getUseCount();
                 this.getCreationDates();
             });
   },
+  /* Force User Authentication by Import auth Module */
   middleware: "auth",
   computed: {
     ...mapGetters({
       getAllStores: "stores/getStores",
       getFocusedStoreId: "stores/getFocusedStoreId",
     }),
-    getStore() {
-      let index = this.$store.state.stores.stores.findIndex(
-        (store) => store.id === this.getFocusedStoreId
-      );
-      return this.$store.state.stores.stores[index];
-    },
+    /* Method to filter stores for autocomplete field (choose a store) */
     filteredDataObj() {
       return this.$store.state.stores.stores.filter((option) => {
         return (
@@ -223,9 +220,11 @@ export default {
     },
   },
   methods: {
+    /* Force rendering chart via index componentKey, because Chars.js can't handle reactive data */
     forceRerender() {
       this.componentKey += 1;
     },
+    /* Get Use count for pie chart. Takes data from Vuex Store, manipulates them and attaches data to local store (see data definition on top of this page) */
     async getUseCount() {
       if (this.selected === null) {
         if (Array.isArray(this.$store.state.stores.stores) && this.$store.state.stores.stores.length) {
@@ -244,6 +243,7 @@ export default {
 
       this.forceRerender();
     },
+    /* Get data for bar chart. Takes data from Vuex Store, manipulates them and attaches data to local store (see data definition on top of this page) */
     async getCreationDates() {
       if (this.selected === null) {
         if (Array.isArray(this.$store.state.stores.stores) && this.$store.state.stores.stores.length) {
@@ -252,7 +252,6 @@ export default {
       }
       
       let manipulate = this.selected.items;
-
 
       // Grouping Objects with ES6 entries function
       // Created Items
@@ -273,34 +272,19 @@ export default {
       this.barChartData.datasets[0].data = [];
       this.barChartData.datasets[1].data = [];
 
-/*       for (const [key, value] of Object.entries(groupedObjectsCreated)) {
-        console.log(key +  " " + value)
-        for (let index = 0; index < this.barChartData.labels.length; ++index) { if ( this.barChartData.labels[index] === key ) { this.barChartData.datasets[0].data[index] = value }
-        }
-      } */
-
       for (let index = 0; index < this.barChartData.labels.length; ++index) { if ( groupedObjectsCreated[this.barChartData.labels[index]] ) { this.barChartData.datasets[0].data[index] = groupedObjectsCreated[this.barChartData.labels[index]] }
       else {this.barChartData.datasets[0].data[index] = 0 } }
 
       for (let index = 0; index < this.barChartData.labels.length; ++index) { if ( groupedObjectsEdited[this.barChartData.labels[index]] ) { this.barChartData.datasets[1].data[index] = groupedObjectsEdited[this.barChartData.labels[index]] } 
       else {this.barChartData.datasets[1].data[index] = 0 } }
 
-/*       for (const [key, value] of Object.entries(groupedObjectsEdited)) {
-        console.log(key +  " " + value)
-        for (let index = 0; index < this.barChartData.labels.length; ++index) { if ( this.barChartData.labels[index] === key ) { this.barChartData.datasets[1].data[index] = value }
-        }
-      } */
-
       // Set Title of Chart
       this.barChartOptions.title.text = "Creation / Update count of " + this.selected.name;
-
-      console.log(this.barChartData.datasets[0].data)
-      console.log(this.barChartData.datasets[1].data)
 
       // Set Max Y-Axis
       const maxCreated = Math.max(...this.barChartData.datasets[0].data)
       const maxEdited = Math.max(...this.barChartData.datasets[1].data)
-      console.log(maxCreated + " " + maxEdited)
+
       if (maxCreated < maxEdited) {this.barChartOptions.scales.yAxes[0].ticks.max = maxEdited} else {this.barChartOptions.scales.yAxes[0].ticks.max = maxCreated}
 
       this.forceRerender();

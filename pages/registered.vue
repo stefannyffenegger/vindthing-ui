@@ -44,9 +44,11 @@
 
 <script>
 export default {
+  /* Guest Component to let anonymous Users on this page */
   middleware: "guest",
   data() {
     return {
+      /* Initial step on registered Page */
       activeStep: 1,
     };
   },

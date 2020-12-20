@@ -301,6 +301,7 @@
         </b-tab-item>
 
         <b-tab-item label="QR Code" v-if="this.getFocusedStoreId">
+          <div id="printableQRCode">
           <h2 class="subtitle">VindThing</h2>
           <p>Store Name: {{ form.name }}</p>
           <p>Store ID: {{ this.getFocusedStoreId }}</p>
@@ -310,10 +311,11 @@
             :value="'http://localhost:3000/stores?id=' + this.getFocusedStoreId"
             size="400"
             level="H"
-            type="svg"
+            renderAs="svg"
           ></qrcode-vue>
+          </div>
           <br />
-          <button @click="printElem()" class="button is-dark is-half">
+          <button @click="printQRCode()" class="button is-dark is-half">
             <b-icon icon="printer"></b-icon><a class="has-text-white">Print</a>
           </button>
         </b-tab-item>
@@ -508,23 +510,27 @@ export default {
       commentPayload.storeId = this.getFocusedStoreId;
       this.$store.dispatch("stores/deleteComment", commentPayload);
     },
-    printElem() {
-      //var mywindow = window.open("", "PRINT", "height=400,width=600");
-      /*var ctx = document.getElementsByTagName("canvas")[0].getContext("2d");
-      var image = document.getElementsByTagName("canvas")[0];
-      console.log("image: ");
-      console.log(image);
+    async printQRCode() {
+      var mywindow = window.open("", "", "height=400,width=600");
+      mywindow.document.write("<html><head><title>QR Code</title>");
+      // mywindow.document.write('<style> p { -webkit-font-smoothing: antialiased;text-rendering: optimizeLegibility;text-size-adjust: 100%;font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;color: #4a4a4a;font-size: 1em;font-weight: 400;line-height: 1.5;-webkit-box-direction: normal;box-sizing: inherit;margin: 0;padding: 0; } </style>');
+      mywindow.document.write("</head><body >");
+      mywindow.document.write(
+        document.getElementById("printableQRCode").innerHTML
+      );
+      mywindow.document.write("</body></html>");
+      mywindow.document.close();
 
-      ctx.fillRect(100,100,100,100);
-      image.src = canvas.toDataURL("image/png");
-      var link = document.getElementById("link");
-      link.addEventListener('click', function() {
-        window.open(canvas.toDataURL("image/png"), '_blank');
-      });
-      //mywindow.print();
-
-      /*/return true;
-    }
+      mywindow.focus();
+      setTimeout(function () {
+        mywindow.print();
+      }, 500);
+      mywindow.onfocus = function () {
+        setTimeout(function () {
+          mywindow.close();
+        }, 500);
+      };
+    },
   },
   components: {
     QrcodeVue,

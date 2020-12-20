@@ -105,10 +105,12 @@
 </template>
 
 <script>
+/* Import Vuex Getter */
 import { mapGetters } from "vuex";
 
-/////////////////////
+//////////////////////////////////////////
 // Form Validation
+//////////////////////////////////////////
 import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
 import {
   required,
@@ -132,20 +134,26 @@ extend("password", {
   },
   message: "Password confirmation does not match",
 });
-/////////////////////
+//////////////////////////////////////////
+//////////////////////////////////////////
 
 export default {
+  /* Force User Authentication by Import auth Module */
   middleware: "auth",
+  /* Component for the Validation Provider */
   components: {
-    ValidationProvider, // Form Validation
-    ValidationObserver, // Form Validation
+    ValidationProvider,
+    ValidationObserver,
   },
+  /* Getter for Vuex logged in User Account */
   computed: {
     ...mapGetters(["loggedInUser"]),
   },
   data() {
     return {
+      /* Password confirmation field */
       confirmation: "",
+      /* Form to send updates later in updateProfile Method */
       form: {
         name: "",
         //email: '',
@@ -154,6 +162,7 @@ export default {
     };
   },
   methods: {
+    /* Send an update with dispatch Method to Vuex Store - Action & Commit */
     async updateProfile() {
       let userPayload = [];
       userPayload.name = this.form.name;

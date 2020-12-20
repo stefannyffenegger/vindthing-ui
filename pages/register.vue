@@ -148,8 +148,9 @@
 import Notification from "~/components/Notification";
 
 
-/////////////////////
+//////////////////////////////////////////
 // Form Validation
+//////////////////////////////////////////
 import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
 import {
   required,
@@ -174,11 +175,13 @@ extend('password', {
   message: 'Password confirmation does not match'
 });
 
-/////////////////////
+//////////////////////////////////////////
+//////////////////////////////////////////
 
 
 
 export default {
+  /* Guest Component to let anonymous Users on this page */
   middleware: "guest",
   components: {
     Notification,
@@ -188,6 +191,7 @@ export default {
 
   data() {
     return {
+      /* Register Form data, used in the register method */
       name: "",
       email: "",
       password: "",
@@ -197,6 +201,7 @@ export default {
   },
 
   methods: {
+    /* Sends data directly via Axios to the VindThing Backend */
     async register() {
       try {
         await this.$axios.post("/api/auth/signup", {
@@ -207,6 +212,7 @@ export default {
 
         this.$router.push("/registered");
       } catch (e) {
+        /* Log error to Notification Component - Bar on top of Register field  */
         this.error = e.response.data.message;
       }
     },
