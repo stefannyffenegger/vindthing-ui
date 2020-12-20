@@ -188,7 +188,6 @@ export default {
      */
     send(userName, inputMessage) {
       if (typeof this.selectedUser !== "string") {
-        console.log(this.selectedUser);
         this.userSelectWarningSnackbar("Please select a user first");
         return;
       }
@@ -225,8 +224,6 @@ export default {
           .get("/api/chat/active-users-except/" + userName, {})
           .then((response) => {
             let userList = response.data;
-
-            console.log(userList);
 
             if (userList.length == 0) {
               return;

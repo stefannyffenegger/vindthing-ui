@@ -16,7 +16,6 @@ export default {
     connect() {
       let formData = new FormData();
       formData.append("username", this.$auth.$state.user.email);
-      console.log(this.$auth.$state.user.email)
       try {
         this.$axios.post("/api/chat/user-connect", formData, {
         });
@@ -31,7 +30,6 @@ export default {
         (frame) => {
           this.connected = true;
           console.log(frame);
-
 
           this.stompClient.subscribe("/client/store/update", (tick) => {
             let store = JSON.parse(tick.body);
@@ -106,9 +104,7 @@ export default {
     },
   created() {
     this.unsubscribe = this.$store.subscribe((mutation, state) => {
-      console.log(mutation.payload);
       if (mutation.type === 'chat/SEND_MESSAGE') {
-        console.log(`Updating to ${mutation}`);
 
         let message = mutation.payload;
 
