@@ -64,7 +64,7 @@ export default {
           this.stompClient.subscribe("/client/queue/messages", (tick) => {
             let message = JSON.parse(tick.body);
             this.$store.dispatch("chat/addMessage", message);
-            if (message.from !== this.$auth.$state.user.email) { this.messageNotification(message); } 
+            if (message.from !== this.$auth.$state.user.email) { this.messageNotification("<b>" + message.from + ":</b> <br>" + message.text); } 
           });
           //////////////////
           //////////////////

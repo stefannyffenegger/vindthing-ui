@@ -49,61 +49,48 @@
         </div>
 
         <div class="columns">
-          <div class="field column" id="sendmessage" style="">
+          <div class="field column is-8" id="sendmessage" style="">
             <input
               type="text"
               :disabled="!selectedUser"
               id="message"
+              v-model="inputField"
               class="input"
               placeholder="Your message"
             />
           </div>
           <div class="column">
-            <b-button id="send" :disabled="!selectedUser" class="button is-info" @click="send(userName)"
+            <b-button id="send" :disabled="!selectedUser || !inputField" class="button is-info" @click="send(userName);inputField=''"
               >Send</b-button
+            >
+            <b-button
+              id="clear"
+              class="button is-primary"
+              @click="clearMessages()"
+              >Clear</b-button
             >
           </div>
         </div>
       </div>
 
-        <!-- ZZZZZZZZZZZZZZ -->
-        <div class="columns">
-          <div id="messages-content">
-            <ul id="messages-content-items" class="">
-              <li
-                v-for="(message, index) in $store.state.chat.messages"
-                :key="index"
-                class="list-group-item"
-              >
-                <a
-                  class="message-item"
-                >
-                  {{ message }}
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- ZZZZZZZZZZZZZZ -->
-
       <div class="column is-half">
-        <div class="columns">
-          <div id="content"></div>
+        <div 
+            v-for="(message, index) in $store.state.chat.messages"
+            :key="index"
+            v-bind:class="message.from === userName ? 'column is-offset-4' : 'column is-8'"
+            >
+          <b-message
+            :closable=false
+            v-bind:type="message.from === userName ? 'is-info' : 'is-primary'"
+            
+            :title="message.from + ' | ' + message.time"
+            aria-close-label="Close message"
+          >
+            {{ message.text }}
+          </b-message>
+
         </div>
 
-        <div class="columns">
-          <div class="column">
-            <b-button
-              id="clear"
-              class="button is-primary"
-              @click="clearMessages()"
-              style="display: none"
-              >Clear</b-button
-            >
-          </div>
-          <div id="response"></div>
-        </div>
       </div>
     </div>
   </div>
@@ -123,14 +110,11 @@ export default {
   components: {
     Notification,
   },
-  mounted() {
-    /* Connect / Subscribe Chat to Websocket Endpoints */
-    // this.connect(this.$auth.$state.user.email);
-  },
   data() {
     return {
       selectedUser: null,
       stompClient: null,
+      inputField: null,
       userName: this.$auth.$state.user.email,
       chatServer: "http://localhost:8080",
     };
@@ -189,104 +173,9 @@ export default {
     },
 
     /**
-     * Connect to server and subscribe
-     * @param userName Username of logged in User
-     */
-    async connect(userName) {
-      // Check if Username is set
-      if (userName == null || userName === "") { return; }
-
-      if(this.connected) {return;}
-
-      // Define form data to send as an Axios Post Request
-      let formData = new FormData();
-      formData.append("username", this.$auth.$state.user.email);
-
-      // Post via Axios, if request fails, notify User
-      try {
-        this.$axios
-          .post("/api/chat/user-connect", formData, {})
-          .then((response) => {
-            this.connectionSuccessSnackbar();
-          });
-      } catch (e) {
-        console.log("Connection failed, " + e);
-        this.connectionWarningSnackbar();
-      }
-
-      // Connect via SockJS & Stomp
-      var socket = new SockJS(this.chatServer + "/chat");
-      this.stompClient = Stomp.over(socket);
-
-      this.stompClient.connect(
-        { username: this.$auth.$state.user.email },
-        (frame) => {
-          console.log(frame);
-
-          this.stompClient.subscribe("/topic/active", (tick) => {
-            this.updateUsers(userName);
-          });
-
-          this.stompClient.subscribe("/client/queue/messages", (tick) => {
-            console.log("MESSAGES SUBSCRIBE");
-            this.showMessage(this.createTextNode(JSON.parse(tick.body)));
-          });
-
-          this.sendConnection(" connected to server");
-
-          //this.setConnected(true);
-        },
-        (error) => {
-          // If connecting fails, notify User and give him the possibility to retry (via Action Handler in method connectionWarningSnackbar )
-          console.log(error);
-          this.connectionWarningSnackbar();
-          this.setConnected(false);
-        }
-      );
-    },
-
-    /**
-     * Disconnect Websocket connection
-     */
-    disconnect() {
-      if (this.stompClient != null) {
-        try {
-          this.$axios
-            .post(
-              "/api/chat/user-disconnect",
-              { username: parent.userName },
-              {}
-            )
-            .then((response) => {
-              this.sendConnection(" disconnected from server");
-
-              this.stompClient.disconnect((response) => {
-                console.log("disconnected...");
-                this.setConnected(false);
-                this.connectionWarningSnackbar();
-              });
-            });
-        } catch (e) {
-          console.log("Connection failed, " + e);
-          this.$buefy.toast.open("Couldn't disconnect. Have a nice day");
-          this.connectionWarningSnackbar();
-        }
-      }
-    },
-
-    async sendConnection(message) {
-      var text = this.userName + message;
-      this.stompClient.send("/app/broadcast", JSON.stringify({ from: "server", text: text }), {});
-
-      // for first time or last time, list active users:
-      let res = await this.updateUsers(this.userName);
-    },
-
-    /**
-     * Send a message
+     * Send a message and dispatch to Vuex Chat Store
      */
     send(userName) {
-      var text = $("#message").val();
       if (typeof this.selectedUser !== "string") {
         console.log(this.selectedUser);
         this.userSelectWarningSnackbar("Please select a user first");
@@ -295,93 +184,24 @@ export default {
 
       let message = { from: userName, text: text, recipient: this.selectedUser }
 
-/*       /////////////////
-      this.stompClient.send(
-        "/ws/chat",
-
-        JSON.stringify(
-          { from: userName, text: text, recipient: this.selectedUser },
-          { sender: userName }
-        )
-      );
-      ///////////////// */
-
       this.$store.dispatch("chat/sendMessage", message);
 
-
-      $("#message").val("");
     },
 
-    createTextNode(messageObj) {
-      var classAlert = "alert-info";
-      var fromTo = messageObj.from;
-      var addTo = fromTo;
-      let self = false;
-
-      if (this.userName == messageObj.from) {
-        fromTo = messageObj.recipient;
-        addTo = "to: " + fromTo;
-        self = true;
-      }
-
-      if (this.userName != messageObj.from && messageObj.from != "server") {
-        classAlert = "alert-warning";
-      }
-
-      if (messageObj.from != "server") {
-        addTo =
-          '<a href="javascript:void(0)" onclick="this.setSelectedUser(\'' + //////////////
-          fromTo +
-          "')\">" +
-          addTo +
-          "</a>";
-      }
-
-      var htmlMessage =
-        '<div class="row alert ' +
-        classAlert +
-        '"><div class="">' +
-        messageObj.text +
-        '</div><div class=""><small>[<b>' +
-        addTo +
-        "</b> " +
-        messageObj.time +
-        "]</small>" +
-        "</div></div>";
-
-      // show notification if not sent to self
-      if (!self) {
-        this.messageNotification(htmlMessage);
-      }
-
-      return htmlMessage;
-    },
-
-    showMessage(message) {
-      $("#content").html($("#content").html() + message); // show message in div
-      $("#clear").show(); // show clear button
-    },
 
     clearMessages() {
-      $("#content").html("");
-      $("#clear").hide();
+      this.$store.dispatch("chat/clearMessage");
     },
 
     setSelectedUser(username) {
       this.selectedUser = username;
-      $("#selectedUser").html(this.selectedUser);
-      if ($("#selectedUser").html() == "") {
-        $("#divSelectedUser").hide();
-      } else {
-        $("#divSelectedUser").show();
-      }
     },
 
     /**
      * COMMENT ME
      * @param storeObject
      */
-    async updateUsers(userName) {
+    updateUsers(userName) {
       try {
         this.$axios
           .get("/api/chat/active-users-except/" + userName, {})

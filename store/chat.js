@@ -15,6 +15,9 @@ export const mutations = {
     SEND_MESSAGE(state, message) {
         return;
     },
+    CLEAR_MESSAGE(state) {
+        state.messages = [];
+    },
 }
 
 export const actions = {
@@ -26,6 +29,9 @@ export const actions = {
     },
     async sendMessage({ commit }, message) {
         commit('SEND_MESSAGE', message)
+    },
+    async clearMessage({ commit }) {
+        commit('CLEAR_MESSAGE')
     },
 }
 
