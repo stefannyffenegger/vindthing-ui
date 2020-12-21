@@ -58,25 +58,30 @@
 </template>
 
 <script>
+/* Import all Getters for Vuex Store */
 import { mapMutations, mapGetters } from "vuex";
 
 export default {
   data() {
     return {
+      /* Forms used in Move Store Form */
       form: {
         itemId: "",
         oldStoreId: "",
         newStoreId: "",
       },
+      /* Search store via autocomplete form */
       searchSpecificStore: "",
       selected: null,
     };
   },
   computed: {
+    /* Getters for Store information */
     ...mapGetters({
       getFocusedStoreId: "stores/getFocusedStoreId",
       getFocusedItemId: "stores/getFocusedItemId",
     }),
+    /* Getters for Store information */
     filteredDataObj() {
       return this.$store.state.stores.stores.filter((option) => {
         return (
@@ -89,20 +94,23 @@ export default {
     },
   },
 
-  mounted() {},
   destroyed() {
+    /* Set focused Item ID to null when modal closed */
     this.$store.dispatch("stores/setFocusedItemId", null);
   },
 
   methods: {
+    /* Move item in local store and backend */
     async moveItem() {
       if (this.getFocusedStoreId != this.form.newStoreId) {
         this.form.oldStoreId = this.getFocusedStoreId;
         this.form.newStoreId = this.selected.id;
         this.form.itemId = this.getFocusedItemId;
         this.$store.dispatch("stores/moveItem", this.form);
-        // Jump into the new Store
+
+        // Jump into the new Store (Feature disabled. Reason: confuses enduser)
         // this.$store.dispatch("stores/setFocusedStoreId", this.form.newStoreId);
+
         this.form = [];
       }
     },

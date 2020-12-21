@@ -10,7 +10,7 @@
             <ValidationObserver v-slot="{ invalid }">
               <form method="post" @submit.prevent="register">
                 <validation-provider
-                  rules="required|alpha_dash"
+                  :rules="{required: true, regex:/^[a-zA-Z0-9_@./#&;:+-äÄöÖüÜ ]*$/}"
                   v-slot="{ errors }"
                 >
                   <!-- v-bind:type="{'is-danger':(!!errors[0])}" -->
@@ -25,7 +25,7 @@
                       v-model="name"
                       required
                       validation-message="Not a valid Name"
-                      maxlength="30"
+                      maxlength="50"
                     ></b-input>
                   </b-field>
                 </validation-provider>
@@ -41,7 +41,7 @@
                       v-bind:icon="!!errors[0] ? 'email' : 'check-circle'"
                       name="username"
                       v-model="email"
-                      maxlength="40"
+                      maxlength="50"
                       required
                       validation-message="Not a valid E-Mail address"
                     ></b-input>
@@ -62,7 +62,7 @@
                       password-reveal
                       v-bind:icon="!!errors[0] ? 'key' : 'check-circle'"
                       name="password"
-                      maxlength="40"
+                      maxlength="64"
                       v-model="password"
                       validation-message="Not a valid Password"
                       required
@@ -86,7 +86,7 @@
                       password-reveal
                       v-bind:icon="!!errors[0] ? 'key' : 'check-circle'"
                       name="password"
-                      maxlength="40"
+                      maxlength="64"
                       v-model="confirmation"
                     ></b-input>
                   </b-field>
@@ -157,6 +157,7 @@ import {
   required,
   email,
   alpha_dash,
+  regex,
   alpha_num,
 } from "vee-validate/dist/rules";
 
@@ -167,6 +168,7 @@ extend("required", {
 extend("email", email);
 extend("alpha_dash", alpha_dash);
 extend("alpha_num", alpha_num);
+extend("regex", regex);
 
 extend('password', {
   params: ['target'],

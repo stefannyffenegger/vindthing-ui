@@ -7,12 +7,10 @@
 </template>
 
 <script>
+/* Import Navigation to all Pages */
 import Navbar from '~/components/Navbar'
 
 export default {
-  components: { Navbar },
-
-  async mounted() {
-  }
+  components: { Navbar }
 }
 </script>

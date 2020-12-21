@@ -10,6 +10,7 @@
 
 <script>
 export default {
+  /* Set an Notification message to local store */
   name: 'Notification',
   props: ['message']
 }

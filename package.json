@@ -11,6 +11,7 @@
   "dependencies": {
     "@nuxtjs/auth": "^4.9.1",
     "@nuxtjs/axios": "^5.12.2",
+    "@stomp/stompjs": "^6.0.0",
     "buefy": "^0.9.4",
     "chart.js": "^2.9.4",
     "core-js": "^3.6.5",
@@ -23,7 +24,6 @@
     "sockjs-client": "^1.5.0",
     "vee-validate": "^3.4.5",
     "vue-chart.js": "^0.2.0",
-    "vue-chartjs": "^3.5.1",
-    "webstomp-client": "^1.2.6"
+    "vue-chartjs": "^3.5.1"
   }
 }

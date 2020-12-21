@@ -19,7 +19,7 @@
 
         <div class="columns">
           <div class="column">
-            <p v-if="$store.state.chat.users === null">
+            <p v-if="!Array.isArray($store.state.chat.users) || !$store.state.chat.users.length">
               No active Users found.
             </p>
             <p v-else>Click on a User to begin chat</p>
@@ -79,6 +79,7 @@
               id="clear"
               class="button is-primary"
               @click="clearMessages()"
+              :disabled="!Array.isArray($store.state.chat.messages) || !$store.state.chat.messages.length"
               >Clear</b-button
             >
           </div>
@@ -112,8 +113,6 @@
 import { mapMutations, mapGetters } from "vuex";
 
 import Notification from "~/components/Notification";
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
 
 export default {
   /* Force User Authentication by Import auth Module */
@@ -124,7 +123,6 @@ export default {
   data() {
     return {
       selectedUser: null,
-      stompClient: null,
       inputField: null,
       userName: this.$auth.$state.user.email,
       chatServer: "http://localhost:8080",

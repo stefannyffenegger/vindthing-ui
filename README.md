@@ -1,20 +1,28 @@
 # VindThingUI
+Finds your things!
 
-## Build Setup
+## Getting started
+#### MongoDB
+- Install MongoDB
+- Create a database named "vindthing"
+- Create a collection named "roles"
+- Add the following Array of roles to the collection
 
-```bash
-# install dependencies
-$ npm install
-
-# serve with hot reload at localhost:3000
-$ npm run dev
-
-# build for production and launch server
-$ npm run build
-$ npm run start
-
-# generate static project
-$ npm run generate
+```
+[
+   { "name": "ROLE_USER" },
+   { "name": "ROLE_MODERATOR" },
+   { "name": "ROLE_ADMIN" }
+]
 ```
 
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+#### Backend
+- Run Spring Boot Application (vindthing)
+- Fetch Maven dependencies
+- Build Backend
+
+#### Frontend
+- Run nuxt.js (vindthing-ui):
+- Change directory context in a Terminal ```cd``` to the project folder
+- Run with ```npm run``` or with ```npm run dev``` for dev mode
+- Ready to run: Website locally available at http://localhost:3000

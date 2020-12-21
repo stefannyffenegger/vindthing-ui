@@ -17,7 +17,7 @@
         <ValidationObserver v-slot="{ invalid }">
           <form method="post" @submit.prevent="updateProfile">
             <validation-provider
-              :rules="`${!form.password ? 'required|alpha_num' : 'alpha_num'}`"
+              :rules="!form.password ? {required: true, regex:/^[a-zA-Z0-9_@./#&;:+-äÄöÖüÜ ]*$/} : {regex: /^[a-zA-Z0-9_@./#&;:+-äÄöÖüÜ ]*$/}"
               v-slot="{ errors }"
             >
               <b-field
@@ -30,7 +30,7 @@
                   v-bind:icon="!!errors[0] ? '' : 'check-circle'"
                   v-model="form.name"
                   validation-message="Not a valid Name"
-                  maxlength="30"
+                  maxlength="50"
                 ></b-input>
               </b-field>
               <span class="help is-danger">{{ errors[0] }}</span>
@@ -51,7 +51,7 @@
                   password-reveal
                   v-bind:icon="!!errors[0] ? 'key' : 'check-circle'"
                   name="password"
-                  maxlength="40"
+                  maxlength="64"
                   v-model="form.password"
                   validation-message="Not a valid Password"
                 ></b-input>
@@ -74,7 +74,7 @@
                   password-reveal
                   v-bind:icon="!!errors[0] ? 'key' : 'check-circle'"
                   name="password"
-                  maxlength="40"
+                  maxlength="64"
                   v-model="confirmation"
                 ></b-input>
               </b-field>
@@ -115,6 +115,7 @@ import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
 import {
   required,
   email,
+  regex,
   alpha_dash,
   alpha_num,
 } from "vee-validate/dist/rules";
@@ -126,6 +127,7 @@ extend("required", {
 extend("email", email);
 extend("alpha_dash", alpha_dash);
 extend("alpha_num", alpha_num);
+extend("regex", regex);
 
 extend("password", {
   params: ["target"],
@@ -153,6 +155,9 @@ export default {
     return {
       /* Password confirmation field */
       confirmation: "",
+
+      regexDruck: "/^[a-zA-Z0-9_@./#&;:+-äÄöÖüÜ ]*$/",
+
       /* Form to send updates later in updateProfile Method */
       form: {
         name: "",

@@ -1,3 +1,5 @@
+/* Component used in for Stores Page */
+
 <template>
   <div class="modal-card" style="width: auto">
     <header class="modal-card-head">
@@ -75,11 +77,13 @@
 </template>
 
 <script>
+/* Import all Getters for Vuex Store */
 import { mapMutations, mapGetters } from "vuex";
 
 export default {
   data() {
     return {
+      /* States for Item Form */
       form: {
         name: "",
         description: "",
@@ -87,6 +91,7 @@ export default {
       }
     };
   },
+  /* Load getters to interact with Vuex Store (Stores) */
   computed: {
     ...mapGetters({
       getFocusedItemId: "stores/getFocusedItemId",
@@ -95,6 +100,7 @@ export default {
   },
 
   mounted() {
+    /* Sets the default content when in edit mode */
     if (this.getFocusedItemId != null) {
       const storeIndex = this.$store.state.stores.stores.findIndex(
         (store) => store.id === this.getFocusedStoreId
@@ -116,11 +122,13 @@ export default {
     }
   },
   destroyed() {
+    /* Set focus Item ID to null if closed or item added/updated */
     this.$store.dispatch("stores/setFocusedItemId", null);
     this.form = [];
   },
 
   methods: {
+    /* Creates Item via dispatch method */
     async createItem() {
       if (this.getFocusedItemId != null) {
         this.form.storeId = this.getFocusedStoreId;
@@ -134,6 +142,7 @@ export default {
       this.form.storeId = this.getFocusedStoreId;
       this.$store.dispatch("stores/createItem", this.form);
     },
+    /* Gets Item if in edit mode */
     getItem() {
       const storeIndex = this.$store.state.stores.stores.findIndex(
         (store) => store.id === this.getFocusedStoreId

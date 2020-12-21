@@ -46,15 +46,18 @@
 </template>
 
 <script>
+/* Import all Getters for Vuex Store */
 import { mapGetters } from "vuex";
 
 export default {
   methods: {
+    /* Logout function triggers Auth Module */
     async logout() {
       await this.$auth.logout();
     }
   },
   computed: {
+    /* Gettes for Auth Module */
     ...mapGetters(["isAuthenticated", "loggedInUser"])
   }
 };

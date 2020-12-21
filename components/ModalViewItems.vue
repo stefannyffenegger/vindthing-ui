@@ -113,19 +113,22 @@
 </template>
 
 <script>
+/* Import all Getters for Vuex Store */
 import {mapMutations, mapGetters} from "vuex";
 
 export default {
   data() {
     return {
+      /* Controlling Modal view actions */
       isComponentModalItemActive: false,
       isComponentModalMoveItem: false,
       isCardLayout: false,
     };
   },
-  middleware: "auth",
 
+  
   computed: {
+    /* Getters for Store information */
     ...mapGetters({
       getAllStores: "stores/getStores",
       getFocusedStoreId: "stores/getFocusedStoreId",
@@ -145,11 +148,13 @@ export default {
   },
 
   destroyed() {
+    /* Set store and item to null when modal gets closed */
     this.$store.dispatch("stores/setFocusedItemId", null);
     this.$store.dispatch("stores/setFocusedStoreId", null);
     this.form = [];
   },
   methods: {
+    /* Increment counter of an item in local store and backend */
     async incrementCounter(item) {
       let payloadCounter = [];
       payloadCounter.storeId = this.getFocusedStoreId;
@@ -159,11 +164,14 @@ export default {
       this.$store.dispatch("stores/incrementCounter", payloadCounter);
     },
 
+    /* Delete Item local store and backend. Send notification to user */
     async deleteItem(item) {
       item.storeId = this.getFocusedStoreId;
       this.$store.dispatch("stores/deleteItem", item);
       this.$buefy.toast.open('Item deleted!')
     },
+
+    /* Confirm dialog for deletion of an item */
     confirmDelete(name, id) {
       this.$buefy.dialog.confirm({
         title: 'Delete Item',
@@ -174,10 +182,14 @@ export default {
         onConfirm: () => this.deleteItem(id)
       })
     },
+
+    /* Update item in local store and backend */
     async updateItem(item) {
       this.$store.dispatch("stores/setFocusedItemId", item.id);
       this.isComponentModalItemActive = true;
     },
+
+    /* Move item in local store and backend */
     async moveItem(item) {
       this.$store.dispatch("stores/setFocusedItemId", item.id);
       this.isComponentModalMoveItem = true;

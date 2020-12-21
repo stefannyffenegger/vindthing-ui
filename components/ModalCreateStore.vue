@@ -1,3 +1,5 @@
+/* Component used in for Stores Page */
+
 <template>
   <div class="modal-card" style="width: auto">
     <header class="modal-card-head">
@@ -28,7 +30,7 @@
                     type="text"
                     :disabled="!checkOwner()"
                     validation-message="Not a valid Name"
-                    maxlength="40"
+                    maxlength="50"
                   ></b-input>
                 </b-field>
               </validation-provider>
@@ -53,7 +55,7 @@
                     type="text"
                     :disabled="!checkOwner()"
                     validation-message="Not a valid Name"
-                    maxlength="40"
+                    maxlength="250"
                   ></b-input>
                 </b-field>
               </validation-provider>
@@ -78,7 +80,7 @@
                     type="text"
                     :disabled="!checkOwner()"
                     validation-message="Not a valid Name"
-                    maxlength="40"
+                    maxlength="50"
                   ></b-input>
                 </b-field>
               </validation-provider>
@@ -325,6 +327,7 @@
 </template>
 
 <script>
+/* Import all Getters for Vuex Store */
 import { mapMutations, mapGetters } from "vuex";
 import QrcodeVue from "qrcode.vue";
 
@@ -334,40 +337,46 @@ import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
 import {
   required,
   email,
-  alpha_dash,
-  alpha_num,
-  alpha_spaces,
   regex,
 } from "vee-validate/dist/rules";
 
 extend("required", {
   ...required,
-  message: "This field is required - Bensch",
+  message: "This field is required",
 });
 extend("email", email);
-extend("alpha_dash", alpha_dash);
-extend("alpha_spaces", alpha_spaces);
-extend("alpha_num", alpha_num);
 extend("regex", regex);
 /////////////////////
 
 export default {
   data() {
     return {
+      /* Forms used in Create Store Form */
       form: {
         name: "",
         description: "",
         location: "",
       },
+      /* Comment field linked via v-model in comments section */
       commentToSend: "",
+      /* Fills live typed filtered data in autocomplete field */
       filteredTags: [],
+      /* All shared user tags from a store */
       SharedUsersTags: [],
+      /* Multipart upload method */
       file: null,
-      searchSpecificUser: [],
+      /* User in autocomplete field */
       selectedSpecificUser: "",
     };
   },
+  components: {
+    /* Load QR Code and Validation Component */
+    QrcodeVue,
+    ValidationProvider, // Form Validation
+    ValidationObserver, // Form Validation
+  },
   computed: {
+    /* Getters for Store information */
     ...mapGetters({
       getFocusedStoreId: "stores/getFocusedStoreId",
     }),
@@ -381,6 +390,7 @@ export default {
   },
 
   mounted() {
+    /* Set initial store values to local data store */
     if (this.getFocusedStoreId != null) {
       var storeIndex = this.$store.state.stores.stores.findIndex(
         (store) => store.id === this.getFocusedStoreId
@@ -392,8 +402,7 @@ export default {
       ].description;
       this.form.location = this.$store.state.stores.stores[storeIndex].location;
 
-      //////////////
-      // SharedUser Tab
+      /* SharedUser Tab with live filtering option */
       this.SharedUsersTags = this.$store.state.stores.stores[
         storeIndex
       ].sharedUsers;
@@ -411,12 +420,14 @@ export default {
     }
   },
   destroyed() {
+    /* Set store and item to null when modal gets closed */
     this.$store.dispatch("stores/setFocusedItemId", null);
     this.$store.dispatch("stores/setFocusedStoreId", null);
     this.form = [];
   },
 
   methods: {
+    /* Get filtered tags while typing in autocomplete field */
     getFilteredTags(text) {
       let userMails = this.$store.state.stores.stores
         .map((store) => {
@@ -426,17 +437,15 @@ export default {
 
       let userMailsFiltered = [...new Set(userMails)];
 
-      console.log(userMailsFiltered);
-
       this.filteredTags = userMailsFiltered.filter((option) => {
         return (
           option.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0 &&
           option.toString() !== this.loggedInUser.email
         );
       });
-      console.log(this.filteredTags);
     },
 
+    /* Check if user is owner of a specific store */
     checkOwner() {
       if (!this.getFocusedStoreId) return true;
 
@@ -450,6 +459,7 @@ export default {
       );
     },
 
+    /* Update shared user in local store and backend */
     async updateSharedUsers() {
       let SharedUserPayload = [];
       SharedUserPayload.sharedUsers = this.SharedUsersTags;
@@ -472,6 +482,8 @@ export default {
         this.$store.dispatch("stores/updateSharedUsers", SharedUserPayload);
       }
     },
+
+    /* Upload multipart file */
     async uploadFile(type) {
       let formData = new FormData();
       formData.append("file", this.file);
@@ -480,6 +492,8 @@ export default {
 
       this.$store.dispatch("stores/uploadFile", formData);
     },
+
+    /* Create store in local store and backend */
     async createStore() {
       if (this.getFocusedStoreId != null) {
         this.form.storeId = this.getFocusedStoreId;
@@ -488,10 +502,11 @@ export default {
         return;
       }
 
-      console.log(this.form);
       this.$store.dispatch("stores/createStore", this.form);
       this.form = [];
     },
+
+    /* Create comment in local store and backend */
     async createComment() {
       if (this.commentToSend === "") {
         return;
@@ -504,16 +519,18 @@ export default {
       this.commentToSend = "";
     },
 
+    /* Delete comment in local store and backend */
     async deleteComment(commentId) {
       let commentPayload = [];
       commentPayload.commentId = commentId;
       commentPayload.storeId = this.getFocusedStoreId;
       this.$store.dispatch("stores/deleteComment", commentPayload);
     },
+
+    /* Print QR Code in popup window */
     async printQRCode() {
       var mywindow = window.open("", "", "height=400,width=600");
       mywindow.document.write("<html><head><title>QR Code</title>");
-      // mywindow.document.write('<style> p { -webkit-font-smoothing: antialiased;text-rendering: optimizeLegibility;text-size-adjust: 100%;font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;color: #4a4a4a;font-size: 1em;font-weight: 400;line-height: 1.5;-webkit-box-direction: normal;box-sizing: inherit;margin: 0;padding: 0; } </style>');
       mywindow.document.write("</head><body >");
       mywindow.document.write(
         document.getElementById("printableQRCode").innerHTML
@@ -531,11 +548,6 @@ export default {
         }, 500);
       };
     },
-  },
-  components: {
-    QrcodeVue,
-    ValidationProvider, // Form Validation
-    ValidationObserver, // Form Validation
   },
 };
 </script>

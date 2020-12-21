@@ -256,7 +256,7 @@ export default {
       // Grouping Objects with ES6 entries function
       // Created Items
       let slicedDatesCreated = manipulate.map((item) => item.created.slice(0, 7)).flat();
-      let slicedDatesEdited = manipulate.map((item) => item.lastedit.slice(0, 7)).flat();
+      let slicedDatesEdited = manipulate.map((item) => item.lastEdit.slice(0, 7)).flat();
 
       // Merging Dates for BarChart Labels
       let mergedDates = [];

@@ -72,7 +72,6 @@
 </template>
 
 <script>
-import Notification from "~/components/Notification";
 
 export default {
   /* Guest Component to let anonymous Users on this page */

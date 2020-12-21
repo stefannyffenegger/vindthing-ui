@@ -1,24 +1,29 @@
 <template></template>
 
 <script>
+/* Import WebSocket components */
 import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
+import { Client, Message, Stomp } from "@stomp/stompjs";
 
 export default {
   data() {
     return {
-      received_messages: [],
+      /* Store properties for WebSocket connections */
       connected: false,
+      email: this.$auth.$state.user.email
     };
   },
+  /* Force User Authentication by Import auth Module */
   middleware: "auth",
+
+
   methods: {
+    /* Connect to Websocket and subscribe to various channels */
     connect() {
       let formData = new FormData();
       formData.append("username", this.$auth.$state.user.email);
       try {
-        this.$axios.post("/api/chat/user-connect", formData, {
-        });
+        this.$axios.post("/api/chat/user-connect", formData, {});
       } catch (e) {
         console.log(e);
       }
@@ -26,9 +31,12 @@ export default {
       this.socket = new SockJS("http://localhost:8080/chat");
       this.stompClient = Stomp.over(this.socket);
 
-      this.stompClient.connect( {username: this.$auth.$state.user.email},
+      this.stompClient.connect(
+        { username: this.$auth.$state.user.email },
         (frame) => {
           this.connected = true;
+
+          // For development purpose, compiler removes log function for production builds
           console.log(frame);
 
           this.stompClient.subscribe("/client/store/update", (tick) => {
@@ -45,12 +53,11 @@ export default {
             let store = JSON.parse(tick.body);
             this.$store.dispatch("stores/deleteCommentSocket", store);
           });
-          
+
           this.stompClient.subscribe("/client/item/delete", (tick) => {
             let store = JSON.parse(tick.body);
             this.$store.dispatch("stores/deleteItemSocket", store);
           });
-
 
           //////////////////
           //////////////////
@@ -62,27 +69,37 @@ export default {
           this.stompClient.subscribe("/client/queue/messages", (tick) => {
             let message = JSON.parse(tick.body);
             this.$store.dispatch("chat/addMessage", message);
-            if (message.from !== this.$auth.$state.user.email) { this.messageNotification("<b>" + message.from + ":</b> <br>" + message.text); } 
+            if (message.from !== this.$auth.$state.user.email) {
+              this.messageNotification(
+                "<b>" + message.from + ":</b> <br>" + message.text
+              );
+            }
           });
           //////////////////
           //////////////////
 
-          this.stompClient.send("/app/broadcast", JSON.stringify({ from: "server", text: "Connected" }), {})
-
-
-        }, (error) => {
+          this.stompClient.send(
+            "/app/broadcast",
+            {},
+            JSON.stringify({ from: "server", text: "Connected" })
+          );
+        },
+        (error) => {
           console.log(error);
           this.connected = false;
         }
       );
-      
     },
+
+    /* Disconnects and unsubcribes all channels  */
     disconnect() {
       if (this.stompClient) {
         this.stompClient.disconnect();
       }
       this.connected = false;
     },
+
+    /* Toggle connection state */
     tickleConnection() {
       this.connected ? this.disconnect() : this.connect();
     },
@@ -99,28 +116,46 @@ export default {
       });
     },
   },
+
+  /* Connects on creation of this component */
   mounted() {
-      this.connect();
-    },
+    this.connect();
+  },
+
+  /* Sets a subscribe mechanism to store mutations of type SEND_MESSAGE */
+  /* And reacts when message has to be sent */
   created() {
     this.unsubscribe = this.$store.subscribe((mutation, state) => {
-      if (mutation.type === 'chat/SEND_MESSAGE') {
-
+      if (mutation.type === "chat/SEND_MESSAGE") {
         let message = mutation.payload;
 
-        // Do whatever makes sense now
-        this.stompClient.send("/ws/chat", JSON.stringify(
-          { from: message.from, text: message.text, recipient: message.recipient },
-          { sender: message.from }
-        )
-      );
+        this.stompClient.send(
+          "/ws/chat",{},JSON.stringify(
+            {
+              from: message.from,
+              text: message.text,
+              recipient: message.recipient,
+            },
+            { sender: message.from }
+          )
 
+        );
       }
     });
-    
   },
+  /* Unsubscribe everything and disconnects from WebSocket connection */
   beforeDestroy() {
     this.unsubscribe();
+    this.disconnect();
+
+    /* Send message that user isn't available anymore */
+    let formData = new FormData();
+    formData.append("username", this.email);
+    try {
+      this.$axios.post("/api/chat/user-disconnect", formData, {} );
+    } catch (e) {
+      console.log(e);
+    }
   },
 };
 </script>

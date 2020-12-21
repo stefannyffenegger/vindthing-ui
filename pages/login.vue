@@ -9,7 +9,9 @@
 
           <ValidationObserver v-slot="{ invalid }">
             <form method="post" @submit.prevent="login">
-              <validation-provider rules="required|email" v-slot="{ errors }">
+              <validation-provider
+              rules="required|email"
+              v-slot="{ errors }">
                 <b-field
                   label="E-Mail"
                   v-bind:type="{ 'is-danger': !!errors[0] }"
@@ -22,13 +24,13 @@
                     v-model="email"
                     required
                     validation-message="Not a valid E-Mail address"
-                    maxlength="40"
+                    maxlength="50"
                   ></b-input>
                 </b-field>
               </validation-provider>
 
               <validation-provider
-                rules="required|alpha_num"
+                rules="required"
                 v-slot="{ errors }"
               >
                 <b-field label="Password">
@@ -38,7 +40,7 @@
                     password-reveal
                     v-bind:icon="!!errors[0] ? 'key' : 'check-circle'"
                     name="password"
-                    maxlength="40"
+                    maxlength="64"
                     v-model="password"
                     validation-message="Not a valid Password"
                     required

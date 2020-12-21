@@ -13,19 +13,15 @@ export default {
       { hid: 'description', name: 'description', content: '' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'stylesheet',
+        href: 'https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.8.55/css/materialdesignicons.min.css'
+      }
     ],
     script: [
       {
         src: "https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js",
-        type: "text/javascript"
-      },
-      {
-        src: "https://cdn.jsdelivr.net/npm/sockjs-client@1.5.0/dist/sockjs.min.js",
-        type: "text/javascript"
-      },
-      {
-        src: "https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js",
         type: "text/javascript"
       }
     ]
@@ -60,6 +56,10 @@ export default {
     baseURL: 'http://localhost:8080/'
   },
 
+  // Disables fetching materialDesignIcons cause offical CDN was down in December.
+  // Fetching from other CDN in head section above.
+  buefy: { materialDesignIcons: false },
+
   auth: {
     rewriteRedirects: true,
     redirect: {
@@ -82,6 +82,7 @@ export default {
   },
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
+    // Fix for Server Side Rendering. Vee-validates needs to be transpiled for Server JS Compiler
     transpile: ['vee-validate','vee-validate/dist/rules']
   }
 }
