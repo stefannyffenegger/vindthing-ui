@@ -10,7 +10,8 @@ export default {
     return {
       /* Store properties for WebSocket connections */
       connected: false,
-      email: this.$auth.$state.user.email
+      email: this.$auth.$state.user.email,
+      baseUrlSockJS: process.env.baseUrlSockJS,
     };
   },
   /* Force User Authentication by Import auth Module */
@@ -28,7 +29,9 @@ export default {
         console.log(e);
       }
 
-      this.socket = new SockJS("http://localhost:8080/chat");
+      console.log(this.baseUrlSockJS)
+
+      this.socket = new SockJS(this.baseUrlSockJS);
       this.stompClient = Stomp.over(this.socket);
 
       this.stompClient.connect(

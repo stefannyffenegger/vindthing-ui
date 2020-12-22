@@ -1,4 +1,13 @@
 export default {
+
+  env: {
+    baseUrl: process.env.BASE_URL || 'http://localhost:3000',
+    baseUrlAPI: process.env.BASE_URL_API || 'http://localhost:8080',
+    baseUrlImage: process.env.BASE_URL_IMAGE || 'http://localhost:8080/api/image/download/',
+    baseUrlQRCode: process.env.BASE_URL_QR_CODE || 'http://localhost:3000/stores?id=',
+    baseUrlSockJS: process.env.BASE_URL_SOCK_JS || 'http://localhost:8080/chat',
+  },
+
   // Target (https://go.nuxtjs.dev/config-target)
   //target: 'static',
   target: 'server',
@@ -53,7 +62,7 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: 'http://localhost:8080/'
+    baseURL: 'http://localhost:8080'
   },
 
   // Disables fetching materialDesignIcons cause offical CDN was down in December.

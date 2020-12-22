@@ -115,7 +115,7 @@
                   <button
                     type="submit"
                     class="button is-dark is-fullwidth"
-                    :disabled="invalid"
+                    :disabled="!checkOwner() || invalid"
                     @click="
                       $parent.close();
                       $buefy.toast.open({
@@ -146,7 +146,7 @@
                   maxlength="50"
                   has-counter
                   append-to-body
-                  :disabled="checkOwner() ? false : true"
+                  :disabled="!checkOwner()"
                   icon="label"
                   placeholder="Add a user"
                   @onclick="getFilteredTags"
@@ -162,7 +162,7 @@
                   placeholder="e.g. alex@stark-industry.com"
                   v-model="selectedSpecificUser"
                   open-on-focus
-                  :disabled="checkOwner() ? false : true"
+                  :disabled="!checkOwner()"
                   :data="filteredTags"
                   @typing="getFilteredTags"
                   @select="(option) => (selectedSpecificUser = option)"
@@ -187,7 +187,7 @@
             <div class="control column">
               <button
                 type="submit"
-                v-show="checkOwner()"
+                :disabled="!checkOwner()"
                 class="button is-dark is-fullwidth"
                 @click="
                   updateSharedUsers();
@@ -219,8 +219,7 @@
           <form method="post" @submit.prevent="createComment">
               <validation-provider
                 :rules="{
-                  required: true,
-                  regex: /^[a-zA-Z0-9_@./#&;:+-äÄöÖüÜ ]*$/
+                  required: true
                 }"
                 v-slot="{ errors }"
               >
@@ -291,7 +290,7 @@
           <b-image
             v-if="!!getStore.imageId"
             :src="
-              'http://localhost:8080/api/image/download/' +
+              this.baseUrlImage +
               getStore.imageId +
               '/' +
               this.$auth.getToken('local').slice(6)
@@ -310,7 +309,7 @@
           <br />
           <qrcode-vue
             id="qrcode"
-            :value="'http://localhost:3000/stores?id=' + this.getFocusedStoreId"
+            :value="this.baseUrlQRCode + this.getFocusedStoreId"
             size="400"
             level="H"
             renderAs="svg"
@@ -367,6 +366,9 @@ export default {
       file: null,
       /* User in autocomplete field */
       selectedSpecificUser: "",
+      /* Use global environment variables */
+      baseUrlImage: process.env.baseUrlImage,
+      baseUrlQRCode: process.env.baseUrlQRCode,
     };
   },
   components: {

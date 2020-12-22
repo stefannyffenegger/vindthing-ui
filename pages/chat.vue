@@ -125,7 +125,6 @@ export default {
       selectedUser: null,
       inputField: null,
       userName: this.$auth.$state.user.email,
-      chatServer: "http://localhost:8080",
     };
   },
   computed: {
