@@ -100,10 +100,8 @@ export default {
           .get(
             "/api/auth/profile/confirm-account?token=" + this.$route.query.id
           )
-          .then(function (response) {
-            // Set success Message
-            this.successMessage = "E-Mail address successfully confirmed!";
-          });
+          // Set success Message
+          this.successMessage = "E-Mail address successfully confirmed!";
       } catch (e) {
         // Set failed Message
         this.error = "Invalid Confirmation E-Mail!";
