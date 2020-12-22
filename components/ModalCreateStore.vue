@@ -7,7 +7,7 @@
     </header>
     <div class="modal-card-body">
       <b-tabs>
-        <b-tab-item label="Edit">
+        <b-tab-item v-bind:label="!getFocusedStoreId ? 'New' : 'Edit'">
           <ValidationObserver v-slot="{ invalid }">
             <form method="post" @submit.prevent="createStore">
               <validation-provider
@@ -37,8 +37,7 @@
 
               <validation-provider
                 :rules="{
-                  required: true,
-                  regex: /^[a-zA-Z0-9_@./#&;:+-äÄöÖüÜ ]*$/
+                  required: true
                 }"
                 v-slot="{ errors }"
               >

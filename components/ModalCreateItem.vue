@@ -6,72 +6,127 @@
       <p class="modal-card-title">Item</p>
     </header>
     <div class="modal-card-body">
-          <form method="post" @submit.prevent="createItem">
-            <div class="field">
-              <label class="label">Name</label>
-              <div class="control">
-                <input
-                  type="text"
-                  class="input"
-                  name="name"
-                  v-model="form.name"
-                  required
-                />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Description</label>
-              <div class="control">
-                <input
-                  type="text"
-                  class="input"
-                  name="description"
-                  v-model="form.description"
-                  required
-                />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Quantity</label>
-              <div class="control">
-                <input
-                  type="text"
-                  class="input"
-                  name="quantity"
-                  v-model="form.quantity"
-                  required
-                />
-              </div>
-            </div>
-            <div class="columns">
-              <div class="control column">
-                <button
-                  @click.prevent="$parent.close()"
-                  class="button is-dark is-fullwidth"
+
+          <ValidationObserver v-slot="{ invalid }">
+            <form method="post" @submit.prevent="createItem">
+              <validation-provider
+                :rules="{
+                  required: true,
+                  regex: /^[a-zA-Z0-9_@./#&;:+-äÄöÖüÜ ]*$/
+                }"
+                v-slot="{ errors }"
+              >
+                <b-field
+                  label="Name"
+                  v-bind:type="{ 'is-danger': !!errors[0] }"
                 >
-                  Close
-                </button>
-              </div>
-              <div class="control column">
-                <button
-                  v-if="getFocusedItemId"
-                  type="submit"
-                  class="button is-dark is-fullwidth"
-                  @click="$parent.close()"
+                  <b-input
+                    placeholder="Toys, Books, ..."
+                    name="name"
+                    v-bind:icon="!!errors[0] ? '' : 'check-circle'"
+                    v-model="form.name"
+                    required
+                    type="text"
+                    validation-message="Not a valid Name"
+                    maxlength="50"
+                  ></b-input>
+                </b-field>
+              </validation-provider>
+
+              <validation-provider
+                :rules="{
+                  required: true
+                }"
+                v-slot="{ errors }"
+              >
+                <b-field
+                  label="Description"
+                  v-bind:type="{ 'is-danger': !!errors[0] }"
                 >
-                  Update Item
-                </button>
-                <button
-                  v-else
-                  type="submit"
-                  class="button is-dark is-fullwidth"
-                  @click="$parent.close()"
+                  <b-input
+                    placeholder="Description"
+                    name="description"
+                    v-bind:icon="!!errors[0] ? '' : 'check-circle'"
+                    v-model="form.description"
+                    required
+                    type="text"
+                    validation-message="Not a valid Description"
+                    maxlength="250"
+                  ></b-input>
+                </b-field>
+              </validation-provider>
+
+              <validation-provider
+                :rules="{
+                  required: true,
+                  regex: /^[0-9]*$/
+                }"
+                v-slot="{ errors }"
+              >
+                <b-field
+                  label="Quantity"
+                  v-bind:type="{ 'is-danger': !!errors[0] }"
                 >
-                  Create Item
-                </button>
+                  <b-input
+                    placeholder="Number..."
+                    name="quantity"
+                    v-bind:icon="!!errors[0] ? '' : 'check-circle'"
+                    v-model="form.quantity"
+                    required
+                    type="number"
+                    validation-message="Not a valid Number"
+                    maxlength="50"
+                  ></b-input>
+                </b-field>
+              </validation-provider>
+
+              <div class="columns">
+                <div class="control column">
+                  <button
+                    @click.prevent="$parent.close()"
+                    class="button is-dark is-fullwidth"
+                  >
+                    Close
+                  </button>
+                </div>
+                <div class="control column" v-if="!getFocusedItemId">
+                  <button
+                    type="submit"
+                    class="button is-dark is-fullwidth"
+                    :disabled="invalid"
+                    @click="
+                      $parent.close();
+                      $buefy.toast.open({
+                        message: 'New Item created!',
+                        type: 'is-success',
+                        duration: 5000,
+                      });
+                    "
+                  >
+                    Create Item
+                  </button>
+                </div>
+                <div class="control column" v-else>
+                  <button
+                    type="submit"
+                    class="button is-dark is-fullwidth"
+                    :disabled="invalid"
+                    @click="
+                      $parent.close();
+                      $buefy.toast.open({
+                        message: 'Item updated!',
+                        type: 'is-success',
+                        duration: 5000,
+                      });
+                    "
+                  >
+                    Update Item
+                  </button>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </ValidationObserver>
+
     </div>
   </div>
 </template>
@@ -80,7 +135,30 @@
 /* Import all Getters for Vuex Store */
 import { mapMutations, mapGetters } from "vuex";
 
+/////////////////////
+// Form Validation
+import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
+import {
+  required,
+  email,
+  regex,
+} from "vee-validate/dist/rules";
+
+extend("required", {
+  ...required,
+  message: "This field is required",
+});
+extend("email", email);
+extend("regex", regex);
+/////////////////////
+
 export default {
+  components: {
+    /* Load Validation Component */
+    ValidationProvider, // Form Validation
+    ValidationObserver, // Form Validation
+  },
+
   data() {
     return {
       /* States for Item Form */
