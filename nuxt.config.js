@@ -12,6 +12,11 @@ export default {
     baseUrlImage: BASE_URL_IMAGE,
     baseUrlQRCode: BASE_URL_QR_CODE,
     baseUrlSockJS: BASE_URL_SOCK_JS,
+
+    axios: {
+      baseURL: BASE_URL_API
+    },
+
   },
 
   // Target (https://go.nuxtjs.dev/config-target)
@@ -66,10 +71,10 @@ export default {
     'nuxt-buefy'
   ],
 
-  // Axios module configuration (https://go.nuxtjs.dev/config-axios)
+/*   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
     baseURL: "https://vindthing-api.scientists.ch/"
-  },
+  }, */
 
   // Disables fetching materialDesignIcons cause offical CDN was down in December.
   // Fetching from other CDN in head section above.
