@@ -11,7 +11,7 @@ export default {
       /* Store properties for WebSocket connections */
       connected: false,
       email: this.$auth.$state.user.email,
-      baseUrlSockJS: process.env.baseUrlSockJS,
+      baseUrlSockJS: this.$config.baseUrlSockJS,
     };
   },
   /* Force User Authentication by Import auth Module */
@@ -28,8 +28,6 @@ export default {
       } catch (e) {
         console.log(e);
       }
-
-      console.log(this.baseUrlSockJS)
 
       this.socket = new SockJS(this.baseUrlSockJS);
       this.stompClient = Stomp.over(this.socket);

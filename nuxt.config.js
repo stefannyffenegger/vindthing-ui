@@ -1,11 +1,17 @@
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
+const BASE_URL_API = process.env.BASE_URL_API || 'http://localhost:8080';
+const BASE_URL_IMAGE = process.env.BASE_URL_IMAGE || 'http://localhost:8080/api/image/download/';
+const BASE_URL_QR_CODE = process.env.BASE_URL_QR_CODE || 'http://localhost:3000/stores?id=';
+const BASE_URL_SOCK_JS = process.env.BASE_URL_SOCK_JS || 'http://localhost:8080/chat';
+
 export default {
 
   publicRuntimeConfig: {
-    baseUrl: process.env.BASE_URL || 'http://localhost:3000',
-    baseUrlAPI: process.env.BASE_URL_API || 'http://localhost:8080',
-    baseUrlImage: process.env.BASE_URL_IMAGE || 'http://localhost:8080/api/image/download/',
-    baseUrlQRCode: process.env.BASE_URL_QR_CODE || 'http://localhost:3000/stores?id=',
-    baseUrlSockJS: process.env.BASE_URL_SOCK_JS || 'http://localhost:8080/chat',
+    baseUrl: BASE_URL,
+    baseUrlAPI: BASE_URL_API,
+    baseUrlImage: BASE_URL_IMAGE,
+    baseUrlQRCode: BASE_URL_QR_CODE,
+    baseUrlSockJS: BASE_URL_SOCK_JS,
   },
 
   // Target (https://go.nuxtjs.dev/config-target)
@@ -62,7 +68,7 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: process.env.BASE_URL_API || 'http://localhost:8080'
+    baseURL: BASE_URL_API
   },
 
   // Disables fetching materialDesignIcons cause offical CDN was down in December.

@@ -366,8 +366,8 @@ export default {
       /* User in autocomplete field */
       selectedSpecificUser: "",
       /* Use global environment variables */
-      baseUrlImage: process.env.baseUrlImage,
-      baseUrlQRCode: process.env.baseUrlQRCode,
+      baseUrlImage: this.$config.baseUrlImage,
+      baseUrlQRCode: this.$config.baseUrlQRCode,
     };
   },
   components: {
