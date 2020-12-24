@@ -1,6 +1,6 @@
 export default {
 
-  env: {
+  publicRuntimeConfig: {
     baseUrl: process.env.BASE_URL || 'http://localhost:3000',
     baseUrlAPI: process.env.BASE_URL_API || 'http://localhost:8080',
     baseUrlImage: process.env.BASE_URL_IMAGE || 'http://localhost:8080/api/image/download/',
