@@ -62,7 +62,7 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: 'http://localhost:8080'
+    baseURL: process.env.BASE_URL_API || 'http://localhost:8080'
   },
 
   // Disables fetching materialDesignIcons cause offical CDN was down in December.
