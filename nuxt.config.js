@@ -68,7 +68,7 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: BASE_URL_API
+    baseURL: "https://vindthing-api.scientists.ch/"
   },
 
   // Disables fetching materialDesignIcons cause offical CDN was down in December.
