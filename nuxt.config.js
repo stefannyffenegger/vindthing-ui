@@ -3,6 +3,22 @@ const BASE_URL_API = process.env.BASE_URL_API || 'http://localhost:8080';
 const BASE_URL_IMAGE = process.env.BASE_URL_IMAGE || 'http://localhost:8080/api/image/download/';
 const BASE_URL_QR_CODE = process.env.BASE_URL_QR_CODE || 'http://localhost:3000/stores?id=';
 const BASE_URL_SOCK_JS = process.env.BASE_URL_SOCK_JS || 'http://localhost:8080/chat';
+const ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL || 'http://192.168.50.12:9200/';
+
+//////////////////////////////////
+// ELASTIC TRACKING OPTIONS
+//////////////////////////////////
+
+const trackRequests = require('track-requests');
+const options = {
+  elasticSearchOptions: {
+    elasticSearchUrl: ELASTIC_SEARCH_URL
+  },
+  getters: {
+    getUser: (req) => req.headers['cookie'],
+    getIp: (req) => req.headers['x-real-ip']
+  }
+};
 
 export default {
 
@@ -18,6 +34,8 @@ export default {
     },
 
   },
+
+  serverMiddleware: [trackRequests(options)],
 
   // Target (https://go.nuxtjs.dev/config-target)
   //target: 'static',
